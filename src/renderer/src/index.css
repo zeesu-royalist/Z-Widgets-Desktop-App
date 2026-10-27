@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(0, 0, 0, 0.08);
+  }
+
+  .dark {
+    --glass-bg: rgba(22, 23, 28, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  body {
+    user-select: none;
+    -webkit-user-drag: none;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+/* Frameless Transparent Widget Window Root Overrides */
+html.widget-window,
+body.widget-window {
+  background: transparent !important;
+  background-color: transparent !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Apple-style draggable titlebar region */
+.titlebar-drag-region {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Glassmorphism surfaces inspired by macOS widgets */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--glass-border);
+}
+
+/* Hardware-Accelerated Smooth Photo Slideshow Transitions */
+@keyframes photoCrossFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.025);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes photoCrossFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+.photo-fade-in {
+  animation: photoCrossFadeIn 1100ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.photo-fade-out {
+  animation: photoCrossFadeOut 1100ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.ambient-fade-in {
+  animation: photoCrossFadeIn 1200ms ease-out forwards;
+  will-change: opacity;
+}
+
+.ambient-fade-out {
+  animation: photoCrossFadeOut 1200ms ease-out forwards;
+  will-change: opacity;
+}
+
