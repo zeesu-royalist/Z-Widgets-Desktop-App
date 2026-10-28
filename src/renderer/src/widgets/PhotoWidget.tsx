@@ -163,11 +163,11 @@ export const PhotoWidget: React.FC<PhotoWidgetProps> = ({ widgetId, onClose }) =
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false)
-        setShowSettingsMenu(false)
       }}
-      className="w-screen h-screen p-2.5 flex items-center justify-center bg-transparent select-none overflow-hidden font-sans"
+      className="w-screen h-screen p-2 flex items-center justify-center bg-transparent select-none overflow-hidden font-sans"
     >
-      <div className="w-full h-full glass-panel rounded-apple-xl flex flex-col justify-between shadow-glass-light dark:shadow-glass-dark border border-black/10 dark:border-white/10 relative overflow-hidden group">
+      <div className="w-full h-full animated-border-wrap">
+      <div className="border-inner w-full h-full glass-panel flex flex-col justify-between relative overflow-hidden group">
         {/* Background Ambient Blur Cross-Fade Layer */}
         {prevPhotoData && isTransitioning && (
           <div
@@ -322,6 +322,7 @@ export const PhotoWidget: React.FC<PhotoWidgetProps> = ({ widgetId, onClose }) =
             </span>
           </div>
         )}
+      </div>
       </div>
     </div>
   )

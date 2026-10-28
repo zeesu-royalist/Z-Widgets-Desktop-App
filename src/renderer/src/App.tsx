@@ -582,9 +582,34 @@ export const App: React.FC = () => {
               if (widget.cardStyle === 'photo') {
                 return (
                   <div key={widget.id} className="flex flex-col items-center group">
-                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-black/5 dark:border-white/10 bg-gradient-to-tr from-cyan-600 via-teal-600 to-blue-700 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
-                      {/* Aerial Ocean Water Simulation Overlay */}
-                      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/30 via-transparent to-black/40 pointer-events-none" />
+                    <div className="w-full h-44 animated-border-wrap transition-all duration-300 group-hover:-translate-y-1">
+                    <div className="border-inner w-full h-full rounded-2xl relative overflow-hidden bg-gradient-to-b from-[#0f0c29] via-[#302b63] to-[#24243e]">
+                      {/* Scenic dummy visual */}
+                      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                        {/* Aurora / Northern lights bands */}
+                        <div className="absolute top-0 left-0 right-0 h-[60%] opacity-60" style={{ background: 'radial-gradient(ellipse 120% 50% at 30% 20%, rgba(72,219,251,0.4) 0%, transparent 60%), radial-gradient(ellipse 100% 40% at 70% 30%, rgba(167,139,250,0.35) 0%, transparent 55%), radial-gradient(ellipse 80% 35% at 50% 10%, rgba(52,211,153,0.3) 0%, transparent 50%)' }} />
+                        {/* Glowing orb (sun/moon) */}
+                        <div className="absolute top-[18%] left-[50%] -translate-x-1/2 w-10 h-10 rounded-full" style={{ background: 'radial-gradient(circle, rgba(251,191,36,0.9) 0%, rgba(251,146,60,0.5) 40%, transparent 70%)', boxShadow: '0 0 40px 15px rgba(251,191,36,0.2)' }} />
+                        {/* Floating particles */}
+                        <div className="absolute w-1 h-1 bg-white/60 rounded-full top-[12%] left-[15%] animate-pulse" />
+                        <div className="absolute w-1.5 h-1.5 bg-cyan-300/40 rounded-full top-[25%] left-[80%] animate-pulse" style={{ animationDelay: '0.5s' }} />
+                        <div className="absolute w-1 h-1 bg-purple-300/50 rounded-full top-[8%] left-[60%] animate-pulse" style={{ animationDelay: '1s' }} />
+                        <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full top-[20%] left-[35%] animate-pulse" style={{ animationDelay: '1.5s' }} />
+                        <div className="absolute w-1 h-1 bg-emerald-300/40 rounded-full top-[15%] left-[90%] animate-pulse" style={{ animationDelay: '2s' }} />
+                        <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full top-[5%] left-[45%]" />
+                        <div className="absolute w-0.5 h-0.5 bg-white/40 rounded-full top-[30%] left-[25%]" />
+                        {/* Mountain range - back layer */}
+                        <svg className="absolute bottom-0 left-0 w-full h-[55%]" viewBox="0 0 400 120" preserveAspectRatio="none">
+                          <path d="M0,120 L0,80 Q40,30 80,60 Q120,20 160,50 Q200,10 240,45 Q280,25 320,55 Q360,35 400,65 L400,120 Z" fill="rgba(15,12,41,0.7)" />
+                          <path d="M0,120 L0,90 Q50,50 100,70 Q150,40 200,65 Q250,35 300,60 Q350,45 400,75 L400,120 Z" fill="rgba(20,18,50,0.85)" />
+                          <path d="M0,120 L0,95 Q60,70 120,85 Q180,60 240,78 Q300,65 360,82 L400,90 L400,120 Z" fill="rgba(15,15,40,0.95)" />
+                        </svg>
+                        {/* Water / ground reflection */}
+                        <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-b from-[#0d0d2b] to-[#080820]" />
+                        <div className="absolute bottom-[3%] left-[25%] w-[50%] h-px bg-gradient-to-r from-transparent via-amber-300/20 to-transparent" />
+                        <div className="absolute bottom-[6%] left-[30%] w-[40%] h-px bg-gradient-to-r from-transparent via-cyan-300/15 to-transparent" />
+                        <div className="absolute bottom-[9%] left-[35%] w-[30%] h-px bg-gradient-to-r from-transparent via-purple-300/10 to-transparent" />
+                      </div>
 
                       {/* Play Button Icon Overlay (as seen in aerial-01 in image) */}
                       <button
@@ -620,6 +645,7 @@ export const App: React.FC = () => {
                           {isActive ? 'Active' : '+ Add'}
                         </button>
                       </div>
+                    </div>
                     </div>
                     {/* Clean caption below tile, matching the image */}
                     <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
@@ -777,46 +803,60 @@ export const App: React.FC = () => {
               }
 
               // -------------------------------------------------------------
-              // 4. Quick Notes (index style: Dark syntax-highlighted code pill)
+              // 4. Quick Notes (Matching QuickNotesWidget Aesthetic)
               // -------------------------------------------------------------
               if (widget.cardStyle === 'code') {
                 return (
                   <div key={widget.id} className="flex flex-col items-center group">
-                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-white/10 bg-[#1e2026] text-white p-4 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl font-mono">
-                      {/* Top Code Header */}
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-white/10 bg-[#16171a] text-white p-3.5 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+                      {/* Top Header */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-                          <span className="text-cyan-400 font-bold">&lt;&gt;</span>
-                          <span className="text-neutral-300 font-sans text-xs">notes.md</span>
+                        <div>
+                          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
+                            <FileText className="h-3 w-3 text-amber-400" />
+                            <span>Quick Notes</span>
+                          </div>
+                          <h4 className="text-sm font-bold text-white tracking-tight leading-tight mt-0.5">
+                            All Notes
+                          </h4>
                         </div>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-neutral-300">
-                          auto-save
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-[#f8b825] flex items-center justify-center shadow-xs">
+                            <Plus className="h-3.5 w-3.5 text-[#3d2700] stroke-[2.75]" />
+                          </div>
+                          <button
+                            onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                            className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                              ? 'bg-white/10 hover:bg-rose-500 text-white'
+                              : 'bg-amber-500 hover:bg-amber-400 text-neutral-950 shadow-sm'
+                              }`}
+                          >
+                            {isActive ? 'Active' : '+ Add'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Stacked Note Cards Preview */}
+                      <div className="space-y-1.5 py-1">
+                        <div className="p-2 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-between">
+                          <div>
+                            <p className="text-xs font-semibold text-white leading-tight">Project Ideas</p>
+                            <p className="text-[10px] text-neutral-400">18 words • Just now</p>
+                          </div>
+                          <ChevronRight className="h-3.5 w-3.5 text-amber-400" />
+                        </div>
+                        <div className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-between opacity-60">
+                          <p className="text-[11px] text-neutral-300 truncate">Meeting Notes</p>
+                          <span className="text-[9px] text-neutral-500">Today</span>
+                        </div>
+                      </div>
+
+                      {/* Bottom Footer Info */}
+                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[10px] text-neutral-400">
+                        <span className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Auto-save active
                         </span>
-                      </div>
-
-                      {/* Code Snippet Lines Preview */}
-                      <div className="space-y-1 text-xs py-1">
-                        <p className="text-pink-400">&lt;html&gt;</p>
-                        <p className="text-neutral-400 pl-3">
-                          &lt;<span className="text-purple-400">meta</span> <span className="text-amber-300">charset</span>=<span className="text-emerald-400">&quot;utf-8&quot;</span>&gt;
-                        </p>
-                        <p className="text-neutral-400 pl-3">
-                          &lt;<span className="text-purple-400">title</span>&gt;Z-Widgets Notes&lt;/<span className="text-purple-400">title</span>&gt;
-                        </p>
-                      </div>
-
-                      {/* Bottom Controls */}
-                      <div className="flex items-center justify-between pt-1 border-t border-white/10 font-sans">
-                        <span className="text-[11px] text-neutral-400">Continuous save</span>
-                        <button
-                          onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
-                          className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
-                            ? 'bg-white/10 hover:bg-rose-500 text-white'
-                            : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
-                            }`}
-                        >
-                          {isActive ? 'Active' : '+ Add'}
-                        </button>
+                        <span className="font-mono">3 Notes</span>
                       </div>
                     </div>
                     <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
@@ -931,43 +971,60 @@ export const App: React.FC = () => {
               }
 
               // -------------------------------------------------------------
-              // 6. To-Do List (project files style: Multi-preview tasks tile)
+              // 6. To-Do List (Matching TodoListWidget Flower Wallpaper Aesthetic)
               // -------------------------------------------------------------
               if (widget.cardStyle === 'tasks') {
                 return (
                   <div key={widget.id} className="flex flex-col items-center group">
-                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-indigo-400/20 dark:border-indigo-500/20 bg-gradient-to-br from-indigo-100/70 to-purple-100/70 dark:from-[#212330]/90 dark:to-[#28273c]/90 p-4 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
-                      {/* Top Dual Preview Cards (matching project files) */}
-                      <div className="grid grid-cols-2 gap-2 h-20">
-                        <div className="rounded-xl p-2 bg-gradient-to-br from-purple-800 to-indigo-950 text-white flex flex-col justify-between shadow-xs">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                          <p className="text-[10px] font-medium leading-tight truncate">Ship M6 Core</p>
-                        </div>
-                        <div className="rounded-xl p-2 bg-gradient-to-br from-blue-700 to-cyan-900 text-white flex flex-col justify-between shadow-xs">
-                          <CheckSquare className="h-3.5 w-3.5 text-cyan-300" />
-                          <p className="text-[10px] font-medium leading-tight truncate">macOS Design</p>
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-white/20 bg-gradient-to-b from-[#6b8f6a] via-[#597858] to-[#435d42] p-2.5 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl text-white">
+                      {/* Top Header: Date, Time Pill, Add Button */}
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[10px] font-semibold text-white/95 drop-shadow-sm">
+                          Wed, 28 Oct
+                        </span>
+
+                        <div className="flex items-center gap-2">
+                          <div className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full text-white text-[10px] font-mono border border-white/30 shadow-xs">
+                            17:22
+                          </div>
+                          <button
+                            onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                            className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                              ? 'bg-black/30 hover:bg-rose-500 text-white'
+                              : 'bg-black/40 hover:bg-black/60 text-white border border-white/20 shadow-sm'
+                              }`}
+                          >
+                            {isActive ? 'Active' : '+ Add'}
+                          </button>
                         </div>
                       </div>
 
-                      {/* Bottom Title & Button */}
-                      <div className="flex items-center justify-between pt-1">
-                        <div>
-                          <p className="text-xs font-bold text-neutral-900 dark:text-neutral-100">
-                            {widget.caption}
-                          </p>
-                          <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
-                            2 of 3 completed
-                          </p>
+                      {/* Floating Black Card: Things to do Today */}
+                      <div className="w-full bg-[#19191b] rounded-xl p-2 space-y-1.5 shadow-md border border-white/10 my-0.5">
+                        <p className="text-xs font-bold text-white tracking-tight leading-none">
+                          Things to do Today
+                        </p>
+
+                        <div className="space-y-1 text-[11px]">
+                          <div className="flex items-center gap-1.5 text-neutral-400 line-through">
+                            <div className="w-3.5 h-3.5 rounded-[4px] bg-white text-neutral-950 flex items-center justify-center shrink-0">
+                              <Check className="h-2.5 w-2.5 stroke-[3]" />
+                            </div>
+                            <span className="truncate">Design a new shot.</span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 text-neutral-100">
+                            <div className="w-3.5 h-3.5 rounded-[4px] border border-white/30 shrink-0" />
+                            <span className="truncate">Finish UI updates on web.</span>
+                          </div>
                         </div>
-                        <button
-                          onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
-                          className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
-                            ? 'bg-black/10 dark:bg-white/10 hover:bg-rose-500 hover:text-white text-neutral-800 dark:text-neutral-200'
-                            : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
-                            }`}
-                        >
-                          {isActive ? 'Active' : '+ Add'}
-                        </button>
+
+                        <div className="flex items-center justify-between pt-1 border-t border-white/[0.08] text-[9px]">
+                          <span className="text-neutral-400 font-mono">1 of 2 completed</span>
+                          <span className="bg-[#28282c] px-2 py-0.5 rounded-full text-neutral-200 border border-white/10">
+                            + Add Task
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
