@@ -6,10 +6,11 @@ import { SystemMonitorWidget } from './SystemMonitorWidget'
 import { WeatherWidget } from './WeatherWidget'
 import { PhotoWidget } from './PhotoWidget'
 import { InternetTelemetryWidget } from './InternetTelemetryWidget'
+import { DepthDiveWidget } from './DepthDiveWidget'
 import {
   DEV_TEST_WIDGET_ID, WIDGET_TYPE_CLOCK, WIDGET_TYPE_NOTES,
   WIDGET_TYPE_TODO, WIDGET_TYPE_SYSTEM, WIDGET_TYPE_WEATHER,
-  WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST
+  WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST, WIDGET_TYPE_DEPTH
 } from '../../../shared/constants'
 
 const WIDGET_COMPONENTS: Record<string, React.ComponentType<{ widgetId: string; onClose?: () => Promise<void> }>> = {
@@ -19,14 +20,16 @@ const WIDGET_COMPONENTS: Record<string, React.ComponentType<{ widgetId: string; 
   [WIDGET_TYPE_SYSTEM]: SystemMonitorWidget,
   [WIDGET_TYPE_WEATHER]: WeatherWidget,
   [WIDGET_TYPE_PHOTO]: PhotoWidget,
-  [WIDGET_TYPE_TEST]: InternetTelemetryWidget
+  [WIDGET_TYPE_TEST]: InternetTelemetryWidget,
+  [WIDGET_TYPE_DEPTH]: DepthDiveWidget
 }
 
 const TYPE_PREFIXES: [string, string][] = [
   ['clock', WIDGET_TYPE_CLOCK], ['note', WIDGET_TYPE_NOTES],
   ['todo', WIDGET_TYPE_TODO], ['system', WIDGET_TYPE_SYSTEM],
   ['weather', WIDGET_TYPE_WEATHER], ['photo', WIDGET_TYPE_PHOTO],
-  ['internet', WIDGET_TYPE_TEST], ['test', WIDGET_TYPE_TEST]
+  ['internet', WIDGET_TYPE_TEST], ['test', WIDGET_TYPE_TEST],
+  ['depth', WIDGET_TYPE_DEPTH], ['dive', WIDGET_TYPE_DEPTH]
 ]
 
 interface ParsedWidgetRoute { id: string; type: string }

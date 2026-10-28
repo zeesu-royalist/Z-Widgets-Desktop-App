@@ -4,14 +4,17 @@ import {
   CloudSun, Layers, Power, Settings as SettingsIcon, CheckCircle2, CheckSquare,
   ChevronRight, Image as ImageIcon, Sun, Moon, LayoutGrid, X, RotateCcw,
   Monitor, Terminal, Zap, ChevronDown, ChevronUp, Minimize2, ArrowLeft,
-  Share2, Tag, Search, Play, Pause, ExternalLink, Check, Sliders
+  Share2, Tag, Search, Play, Pause, ExternalLink, Check, Sliders,
+  Compass, ArrowUp, ArrowDown, Bell, Folder, Download
 } from 'lucide-react'
 import { AppInfo, StartupSettings, PersistedWidgetConfig } from '../../shared/types'
 import {
   DEV_TEST_WIDGET_ID, DIGITAL_CLOCK_WIDGET_ID, QUICK_NOTES_WIDGET_ID,
   TODO_WIDGET_ID, SYSTEM_MONITOR_WIDGET_ID, WEATHER_WIDGET_ID, PHOTO_WIDGET_ID,
+  DEPTH_DIVE_WIDGET_ID,
   WIDGET_TYPE_CLOCK, WIDGET_TYPE_NOTES, WIDGET_TYPE_TODO,
-  WIDGET_TYPE_SYSTEM, WIDGET_TYPE_WEATHER, WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST
+  WIDGET_TYPE_SYSTEM, WIDGET_TYPE_WEATHER, WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST,
+  WIDGET_TYPE_DEPTH
 } from '../../shared/constants'
 
 // --- Widget Catalog with Visual Styling Attributes ---
@@ -27,7 +30,7 @@ interface WidgetMeta {
   y: number
   type: string
   accentColor: string
-  cardStyle: 'photo' | 'canyon' | 'equalizer' | 'code' | 'weather' | 'tasks' | 'project'
+  cardStyle: 'photo' | 'canyon' | 'equalizer' | 'code' | 'weather' | 'tasks' | 'project' | 'dive'
   icon: React.ReactNode
   isDev?: boolean
 }
@@ -138,6 +141,21 @@ const WIDGET_CATALOG: WidgetMeta[] = [
     cardStyle: 'project',
     icon: <AppWindow className="h-4 w-4 text-fuchsia-400" />,
     isDev: true
+  },
+  {
+    id: DEPTH_DIVE_WIDGET_ID,
+    name: 'File Activity Monitor',
+    caption: 'file activity',
+    cat: 'Hardware & System',
+    desc: 'Apple Watch Ultra style monitor displaying active file processes, downloads, documents sync, and background tasks.',
+    w: 320,
+    h: 180,
+    x: 80,
+    y: 560,
+    type: WIDGET_TYPE_DEPTH,
+    accentColor: '#edd75e',
+    cardStyle: 'dive',
+    icon: <Folder className="h-4 w-4 text-yellow-400" />
   }
 ]
 
@@ -400,7 +418,7 @@ export const App: React.FC = () => {
               className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
               title="Quick Look: Toggle show/hide all desktop widgets"
             >
-              <Eye className="h-4 w-4" />
+
             </button>
             <button
               onClick={() => setSelectedCategory((prev) => prev === 'active' ? 'all' : 'active')}
@@ -501,7 +519,7 @@ export const App: React.FC = () => {
               {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <div className="flex items-center gap-1 text-[11px] text-neutral-400">
-              <span className={`w-1.5 h-1.5 rounded-full ${activeWidgets.length > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-400'}`} />
+
               <span>{activeWidgets.length} active</span>
             </div>
             <button
@@ -668,7 +686,6 @@ export const App: React.FC = () => {
                           {formattedDate}
                         </span>
                         <div className="flex items-center gap-1.5">
-                          <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-emerald-400 animate-pulse' : 'bg-white/30'}`} />
                           <span className="text-[10px] text-white/80 font-mono">
                             {isActive ? (isHidden ? 'Hidden' : 'Live') : 'Offline'}
                           </span>
@@ -1035,7 +1052,128 @@ export const App: React.FC = () => {
               }
 
               // -------------------------------------------------------------
-              // 7. Host Window (Internet Telemetry style)
+              // 7. File Activity Monitor (Matching DepthDiveWidget)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'dive') {
+                return (
+                  <div key={widget.id} className="flex flex-col items-center group">
+                    <div
+                      className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/20 text-white p-3.5 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl cursor-default"
+                      style={{
+                        background: 'linear-gradient(180deg, #4b4205 0%, #3e3604 50%, #302a03 100%)'
+                      }}
+                    >
+                      {/* Top Header: Downloads on left, Syncing status on right + Action button */}
+                      <div className="flex items-center justify-between z-10 w-full px-0.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Folder className="h-4 w-4 text-white/90 shrink-0" />
+                          <span className="font-bold text-lg text-white leading-none tracking-tight">Downloads</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/30 border border-white/10 text-[10px] text-white/90">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#edd75e] animate-pulse" />
+                            <span>Downloading</span>
+                          </div>
+                          <button
+                            onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                            className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-white/20 hover:bg-rose-500 text-white border border-white/20'
+                                : 'bg-[#edd75e] text-neutral-950 hover:bg-yellow-300 shadow-sm'
+                            }`}
+                          >
+                            {isActive ? 'Active' : '+ Add'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Main Body: Left Ladder Scale + Center File Card + Right Arc Ring Card */}
+                      <div className="flex items-center gap-2 w-full h-[68px] z-10 my-auto">
+                        {/* Left: Mini Ladder Scale */}
+                        <div className="w-6 h-full flex flex-col justify-between items-start py-0.5 relative shrink-0">
+                          {Array.from({ length: 8 }, (_, i) => {
+                            const isSelected = i === 0
+                            return (
+                              <div key={i} className="flex items-center w-full h-[2.5px]">
+                                {isSelected ? (
+                                  <div className="flex items-center w-full">
+                                    <svg width="6" height="7" viewBox="0 0 6 7" className="shrink-0 -ml-0.5">
+                                      <polygon points="0,0.5 5,3.5 0,6.5" fill="#ffffff" />
+                                    </svg>
+                                    <span className="flex-1 h-[2px] bg-white rounded-full ml-0.5" />
+                                  </div>
+                                ) : (
+                                  <span className="w-3.5 h-[1.5px] rounded-full bg-[#756a28]/75 ml-1.5" />
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+
+                        {/* Center Card: File Name & Process Detail */}
+                        <div
+                          className="flex-1 h-full rounded-xl px-2.5 py-1.5 flex flex-col justify-between shadow-inner overflow-hidden"
+                          style={{ background: '#241f02' }}
+                        >
+                          <div className="flex items-center gap-1 min-w-0">
+                            <ArrowDown className="h-3 w-3 text-white stroke-[3] shrink-0" />
+                            <span className="font-bold text-xs text-[#edd75e] truncate tracking-tight">
+                              setup_installer.dmg
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-[9px] text-[#b8ad82] leading-none my-0.5">
+                            <span className="truncate">Downloading package</span>
+                            <span className="font-mono text-white/50 text-[8px]">12.4 MB/s</span>
+                          </div>
+                          <div className="w-full space-y-0.5">
+                            <div className="w-full h-1 rounded-full bg-white/10 overflow-hidden">
+                              <div className="w-[78%] h-full bg-[#edd75e] rounded-full" />
+                            </div>
+                            <div className="flex justify-between text-[8px] text-[#b8ad82]/70 leading-none">
+                              <span>142 MB / 180 MB</span>
+                              <span className="font-mono">78%</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Card: Arc + Download Icon */}
+                        <div
+                          className="w-14 h-full rounded-xl flex items-center justify-center shadow-inner relative shrink-0"
+                          style={{ background: '#241f02' }}
+                        >
+                          <svg width="34" height="34" viewBox="0 0 34 34" className="absolute inset-0 m-auto">
+                            <circle
+                              cx="17"
+                              cy="17"
+                              r="12"
+                              fill="none"
+                              stroke="#edd75e"
+                              strokeWidth="2.8"
+                              strokeDasharray="56 20"
+                              strokeLinecap="round"
+                              transform="rotate(55 17 17)"
+                            />
+                          </svg>
+                          <Download className="h-3 w-3 text-white fill-white relative z-10" />
+                        </div>
+                      </div>
+
+                      {/* Bottom Caption Row */}
+                      <div className="flex items-center justify-between text-[10px] text-white/60 pt-0.5 border-t border-white/10">
+                        <span className="font-mono text-[#edd75e]/80">Downloads • Documents</span>
+                        <span className="text-white/40">320 × 180</span>
+                      </div>
+                    </div>
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 8. Host Window (Internet Telemetry style)
               // -------------------------------------------------------------
               return (
                 <div key={widget.id} className="flex flex-col items-center group">
@@ -1152,7 +1290,6 @@ export const App: React.FC = () => {
               className="flex items-center gap-1.5 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors cursor-pointer"
               title="Click to toggle Launch at Login"
             >
-              <span className={`w-2 h-2 rounded-full ${startupSettings?.openAtLogin ? 'bg-emerald-500' : 'bg-neutral-400'}`} />
               <span className="text-[11px]">
                 {isUpdatingStartup ? 'Saving...' : startupSettings?.openAtLogin ? 'Login Startup: Enabled' : 'Login Startup: Disabled'}
               </span>
@@ -1216,7 +1353,7 @@ export const App: React.FC = () => {
                   <div>
                     <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Launch at Login</p>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-xs mt-0.5 leading-relaxed">Automatically start Z-Widgets in background on login.</p>
-                    {!startupSettings?.isPackaged && <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">• Dev mode: Saved locally without registry modifications</span>}
+                    {!startupSettings?.isPackaged && <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">Dev mode: Saved locally without registry modifications</span>}
                   </div>
                 </div>
                 <button onClick={handleToggleStartup} disabled={isUpdatingStartup || !startupSettings?.isSupported} className={`px-3 py-1.5 rounded-apple-sm text-xs font-semibold transition-all cursor-pointer ${startupSettings?.openAtLogin ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm' : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200'}`}>
@@ -1286,7 +1423,7 @@ export const App: React.FC = () => {
                 </p>
                 <div className="pt-1 flex items-center justify-between text-[11px] text-neutral-400 border-t border-black/[0.04] dark:border-white/[0.04]">
                   <span>Portfolio: <span className="font-mono text-neutral-600 dark:text-neutral-300">zeesu-royalist.vercel.app</span></span>
-                  <span className="text-[10px] uppercase tracking-wider font-mono text-emerald-600 dark:text-emerald-400 font-semibold">• Verified Creator</span>
+                  <span className="text-[10px] uppercase tracking-wider font-mono text-emerald-600 dark:text-emerald-400 font-semibold">Verified Creator</span>
                 </div>
               </div>
             </div>
