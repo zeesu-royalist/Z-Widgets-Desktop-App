@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { CheckSquare, Square, Check, X, Plus, Trash2, AlertCircle } from 'lucide-react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { Check, X, Plus, Trash2, Pencil, GripVertical } from 'lucide-react'
 import { TodoItem } from '../../../shared/types'
 
 interface TodoListWidgetProps {
@@ -7,190 +7,381 @@ interface TodoListWidgetProps {
   onClose?: () => Promise<void>
 }
 
-type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
+// 4 Flower wallpapers bundled via standard ESM asset URLs
+const FLOWER_IMAGES = [
+  new URL('../assets/flowers/flower1.jpg', import.meta.url).href,
+  new URL('../assets/flowers/flower2.jpg', import.meta.url).href,
+  new URL('../assets/flowers/flower3.jpg', import.meta.url).href,
+  new URL('../assets/flowers/flower4.jpg', import.meta.url).href
+]
+
+const DEFAULT_TODOS: TodoItem[] = [
+  { id: 'todo-1', text: 'Design a new shot.', completed: true, createdAt: Date.now() - 3600000 },
+  { id: 'todo-2', text: 'Make a twitter post.', completed: true, createdAt: Date.now() - 2700000 },
+  { id: 'todo-3', text: 'Finish UI updates on the web.', completed: false, createdAt: Date.now() - 1800000 },
+  { id: 'todo-4', text: 'Coffee Time 😊', completed: true, createdAt: Date.now() - 900000 },
+  { id: 'todo-5', text: 'Meeting with stakeholders', completed: false, createdAt: Date.now() }
+]
 
 export const TodoListWidget: React.FC<TodoListWidgetProps> = ({ widgetId, onClose }) => {
   const [todos, setTodos] = useState<TodoItem[]>([])
-  const [inputText, setInputText] = useState<string>('')
-  const [isLoaded, setIsLoaded] = useState<boolean>(false)
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
+  const [inputText, setInputText] = useState('')
+  const [isAddingTask, setIsAddingTask] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editText, setEditText] = useState('')
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null)
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [bgIndex, setBgIndex] = useState(0)
+  const [now, setNow] = useState(() => new Date())
+  const addInputRef = useRef<HTMLInputElement | null>(null)
 
-  const latestTodosRef = useRef<TodoItem[]>([])
-  latestTodosRef.current = todos
-
+  // 7-second rotating wallpaper slideshow
   useEffect(() => {
-    let isMounted = true
+    const timer = setInterval(() => setBgIndex((i) => (i + 1) % FLOWER_IMAGES.length), 7000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Live clock timer
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const dateStr = useMemo(() => {
+    return now.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+  }, [now])
+
+  const timeStr = useMemo(() => {
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+  }, [now])
+
+  // Initial load
+  useEffect(() => {
     window.api?.getTodos?.(widgetId).then((saved) => {
-      if (!isMounted) return
-      const list = saved || []
-      setTodos(list)
-      latestTodosRef.current = list
-      setIsLoaded(true)
-      if (list.length > 0) setSaveStatus('saved')
-    }).catch(() => { if (isMounted) setIsLoaded(true) })
-    return () => { isMounted = false }
+      if (!saved || saved.length === 0) {
+        setTodos(DEFAULT_TODOS)
+        window.api?.saveTodos?.(widgetId, DEFAULT_TODOS).catch(() => {})
+      } else {
+        setTodos(saved)
+        setSaveStatus('saved')
+      }
+    }).catch(() => {})
   }, [widgetId])
 
-  const persistTodos = useCallback(async (items: TodoItem[]): Promise<boolean> => {
+  // Persistence handler
+  const persistTodos = useCallback(async (items: TodoItem[]) => {
     setSaveStatus('saving')
     try {
       const ok = await window.api?.saveTodos?.(widgetId, items)
       setSaveStatus(ok ? 'saved' : 'error')
-      return Boolean(ok)
     } catch {
       setSaveStatus('error')
-      return false
     }
   }, [widgetId])
 
-  const updateAndPersist = (next: TodoItem[]): void => {
+  const updateTodos = (next: TodoItem[]): void => {
     setTodos(next)
-    latestTodosRef.current = next
     persistTodos(next)
   }
 
+  // Task Actions
   const handleAddTask = (e?: React.FormEvent): void => {
     e?.preventDefault()
     const trimmed = inputText.trim()
     if (!trimmed) return
-    updateAndPersist([{ id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, text: trimmed, completed: false, createdAt: Date.now() }, ...todos])
+    updateTodos([...todos, { id: `task-${Date.now()}`, text: trimmed, completed: false, createdAt: Date.now() }])
     setInputText('')
+    setIsAddingTask(false)
   }
 
-  const handleToggleTask = (id: string): void => {
-    updateAndPersist(todos.map((t) => t.id === id ? { ...t, completed: !t.completed } : t))
+  const handleToggle = (id: string): void => {
+    updateTodos(todos.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)))
   }
 
-  const handleDeleteTask = (id: string): void => {
-    updateAndPersist(todos.filter((t) => t.id !== id))
+  const handleDelete = (id: string): void => {
+    updateTodos(todos.filter((t) => t.id !== id))
+    if (editingId === id) setEditingId(null)
+  }
+
+  const startEdit = (task: TodoItem): void => {
+    setEditingId(task.id)
+    setEditText(task.text)
+  }
+
+  const handleSaveEdit = (id: string): void => {
+    const trimmed = editText.trim()
+    if (trimmed) {
+      updateTodos(todos.map((t) => (t.id === id ? { ...t, text: trimmed } : t)))
+    }
+    setEditingId(null)
+  }
+
+  // Drag and drop reordering
+  const handleDrop = (targetIdx: number): void => {
+    if (draggedIdx === null || draggedIdx === targetIdx) {
+      setDraggedIdx(null)
+      setDragOverIdx(null)
+      return
+    }
+    const updated = [...todos]
+    const [moved] = updated.splice(draggedIdx, 1)
+    updated.splice(targetIdx, 0, moved)
+    updateTodos(updated)
+    setDraggedIdx(null)
+    setDragOverIdx(null)
   }
 
   const handleClose = async (): Promise<void> => {
     if (onClose) return onClose()
-    try { await (window.api?.closeSelf?.() ?? window.api?.closeWidget?.(widgetId)) }
-    catch { window.api?.closeWidget?.(widgetId) }
+    try {
+      await (window.api?.closeSelf?.() ?? window.api?.closeWidget?.(widgetId))
+    } catch {
+      window.api?.closeWidget?.(widgetId)
+    }
   }
 
-  const completedCount = todos.filter((t) => t.completed).length
+  const completedCount = useMemo(() => todos.filter((t) => t.completed).length, [todos])
 
   return (
-    <div className="w-screen h-screen p-2.5 flex items-center justify-center bg-transparent select-none overflow-hidden font-sans">
-      <div className="w-full h-full glass-panel rounded-apple-xl p-4 flex flex-col justify-between shadow-glass-light dark:shadow-glass-dark border border-black/10 dark:border-white/10 relative group transition-all">
-        {/* Top Header Row */}
-        <div className="titlebar-drag-region flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.06] z-10 cursor-move">
-          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-            <div className="p-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-              <CheckSquare className="h-3.5 w-3.5" />
-            </div>
-            <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-800 dark:text-neutral-200">
-              To-Do List
-            </span>
-          </div>
+    <div className="w-screen h-screen flex bg-transparent select-none overflow-hidden font-sans">
+      {/* Outer Shell: Green flower wallpaper background with bezel */}
+      <div className="titlebar-drag-region w-full h-full rounded-[28px] p-2 flex flex-col justify-between relative group overflow-hidden border border-black/40 text-white select-none bg-[#7a9d7c]">
 
-          <div className="titlebar-no-drag flex items-center gap-2.5">
-            {saveStatus !== 'idle' && (
-              <span className={`text-[10px] font-medium flex items-center gap-1 ${
-                saveStatus === 'saving' ? 'text-amber-600 dark:text-amber-400 animate-pulse' :
-                saveStatus === 'saved' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'
-              }`}>
-                {saveStatus === 'saving' && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
-                {saveStatus === 'saved' && <Check className="h-3 w-3" />}
-                {saveStatus === 'error' && <AlertCircle className="h-3 w-3" />}
-                {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : 'Save error'}
+        {/* 7-Second Rotating Flower Slideshow */}
+        {FLOWER_IMAGES.map((imgSrc, idx) => (
+          <img
+            key={imgSrc}
+            src={imgSrc}
+            alt="Flower wallpaper"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out pointer-events-none select-none ${
+              idx === bgIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))}
+
+        {/* Contrast Vignette Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/55 pointer-events-none" />
+
+        {/* Header Row: Live Date (Left) and Time Capsule with Close button (Right) */}
+        <div className="titlebar-drag-region w-full px-2 pt-1 pb-2 flex items-center justify-between z-10 shrink-0">
+          <span className="text-[12px] font-semibold text-white/95 tracking-tight drop-shadow-md">
+            {dateStr}
+          </span>
+
+          <div className="titlebar-no-drag flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleClose}
+              title="Close widget"
+              className="opacity-0 group-hover:opacity-100 p-1 rounded-full text-white/70 hover:text-white hover:bg-black/25 transition-all cursor-pointer"
+            >
+              <X className="h-3 w-3" />
+            </button>
+
+            <div className="bg-white/25 backdrop-blur-md px-3 py-0.5 rounded-full text-white text-[12px] font-mono font-semibold border border-white/30 shadow-sm drop-shadow-md">
+              {timeStr}
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Card: Things to do Today */}
+        <div className="titlebar-no-drag w-full flex-1 bg-[#19191b] rounded-[22px] p-3.5 flex flex-col justify-between shadow-[0_10px_28px_rgba(0,0,0,0.5)] border border-white/[0.08] relative z-10 overflow-hidden min-h-0">
+          <div className="flex items-center justify-between pb-1 shrink-0">
+            <h1 className="text-[15px] font-bold text-white tracking-tight">Things to do Today</h1>
+            {saveStatus === 'saving' && (
+              <span className="text-[10px] text-emerald-400 font-mono animate-pulse flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Saving
               </span>
             )}
-
-            <button
-              onClick={handleClose}
-              aria-label="Close to-do widget"
-              title="Close widget (keeps tasks saved)"
-              className="p-1 rounded-full text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-100 hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
           </div>
-        </div>
 
-        {/* Task Input Field */}
-        <form onSubmit={handleAddTask} className="titlebar-no-drag my-2 flex items-center gap-1.5">
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder={isLoaded ? 'Add a new task...' : 'Loading tasks...'}
-            disabled={!isLoaded}
-            maxLength={200}
-            className="flex-1 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-apple-sm px-2.5 py-1.5 text-xs text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 outline-none focus:border-blue-500/50 select-text cursor-text transition-all"
-          />
-          <button
-            type="submit"
-            disabled={!isLoaded || !inputText.trim()}
-            title="Add task"
-            className="inline-flex items-center justify-center p-1.5 rounded-apple-sm bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white transition-colors cursor-pointer shadow-sm"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
-        </form>
-
-        {/* Scrollable Tasks List */}
-        <div className="titlebar-no-drag flex-1 overflow-y-auto space-y-1 pr-0.5 select-text my-0.5 min-h-0">
-          {todos.length > 0 ? (
-            todos.map((task) => (
-              <div
-                key={task.id}
-                className="group/task flex items-center gap-2 p-1.5 rounded-apple-sm bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.05] dark:hover:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.04] transition-all"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleToggleTask(task.id)}
-                  title={task.completed ? 'Mark incomplete' : 'Mark complete'}
-                  className="p-0.5 rounded text-neutral-400 hover:text-emerald-500 transition-colors cursor-pointer shrink-0"
-                >
-                  {task.completed ? (
-                    <div className="h-3.5 w-3.5 rounded bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-                      <Check className="h-2.5 w-2.5 stroke-[3]" />
-                    </div>
-                  ) : (
-                    <Square className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500" />
-                  )}
-                </button>
-
-                <span
-                  className={`flex-1 text-xs break-words leading-relaxed select-text cursor-default ${
-                    task.completed
-                      ? 'line-through text-neutral-400 dark:text-neutral-500'
-                      : 'text-neutral-800 dark:text-neutral-100'
+          {/* Tasks List with Drag & Drop Reordering */}
+          <div className="titlebar-no-drag flex-1 overflow-y-auto space-y-1.5 py-1.5 no-scrollbar pr-0.5 min-h-0">
+            {todos.length > 0 ? (
+              todos.map((task, idx) => (
+                <div
+                  key={task.id}
+                  draggable={editingId !== task.id}
+                  onDragStart={(e) => {
+                    setDraggedIdx(idx)
+                    e.dataTransfer.effectAllowed = 'move'
+                    e.dataTransfer.setData('text/plain', String(idx))
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                    e.dataTransfer.dropEffect = 'move'
+                    if (dragOverIdx !== idx) setDragOverIdx(idx)
+                  }}
+                  onDragEnd={() => {
+                    setDraggedIdx(null)
+                    setDragOverIdx(null)
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    handleDrop(idx)
+                  }}
+                  className={`group/task flex items-center justify-between gap-1.5 py-1 px-1 rounded-lg transition-all ${
+                    draggedIdx === idx ? 'opacity-30 scale-[0.98]' : 'opacity-100'
+                  } ${
+                    dragOverIdx === idx && draggedIdx !== idx
+                      ? 'border-t-2 border-emerald-400 bg-white/[0.04]'
+                      : 'border-t-2 border-transparent'
                   }`}
                 >
-                  {task.text}
-                </span>
+                  {/* Drag Handle Grip */}
+                  <div
+                    title="Drag to reorder"
+                    className="text-neutral-500 hover:text-neutral-300 cursor-grab active:cursor-grabbing p-0.5 shrink-0 opacity-20 group-hover/task:opacity-90 transition-opacity"
+                  >
+                    <GripVertical className="h-3 w-3" />
+                  </div>
 
+                  {editingId === task.id ? (
+                    /* Inline Edit Mode */
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                        handleSaveEdit(task.id)
+                      }}
+                      className="flex items-center gap-1.5 flex-1 min-w-0"
+                    >
+                      <input
+                        type="text"
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Escape' && setEditingId(null)}
+                        autoFocus
+                        maxLength={200}
+                        className="flex-1 bg-white/[0.08] text-[13px] text-white border border-emerald-400/50 rounded px-2 py-0.5 outline-none select-text"
+                      />
+                      <button
+                        type="submit"
+                        title="Save edit"
+                        className="p-1 rounded bg-emerald-400 text-neutral-950 hover:bg-emerald-300 transition-all cursor-pointer shrink-0"
+                      >
+                        <Check className="h-3 w-3 stroke-[3]" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(null)}
+                        title="Cancel"
+                        className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer shrink-0"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </form>
+                  ) : (
+                    /* Normal Display Mode */
+                    <>
+                      <div
+                        onClick={() => handleToggle(task.id)}
+                        onDoubleClick={() => startEdit(task)}
+                        title="Click to toggle, double-click to edit"
+                        className="flex items-center gap-2 flex-1 min-w-0 cursor-pointer select-none"
+                      >
+                        <div
+                          className={`w-[18px] h-[18px] rounded-[5px] flex items-center justify-center shrink-0 transition-all ${
+                            task.completed ? 'bg-white text-neutral-950 shadow-xs' : 'border border-white/30 hover:border-white/60 bg-transparent'
+                          }`}
+                        >
+                          {task.completed && <Check className="h-3 w-3 text-neutral-950 stroke-[3.5]" />}
+                        </div>
+                        <span
+                          className={`text-[13px] truncate leading-tight transition-all select-text ${
+                            task.completed ? 'text-neutral-400 line-through' : 'text-neutral-100 font-normal'
+                          }`}
+                        >
+                          {task.text}
+                        </span>
+                      </div>
+
+                      {/* Action buttons on hover: Edit & Delete */}
+                      <div className="flex items-center gap-0.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => startEdit(task)}
+                          title="Edit task"
+                          className="opacity-0 group-hover/task:opacity-100 p-1 rounded-md text-neutral-400 hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer"
+                        >
+                          <Pencil className="h-3 w-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(task.id)}
+                          title="Delete task"
+                          className="opacity-0 group-hover/task:opacity-100 p-1 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/10 transition-all cursor-pointer"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center text-center p-3 text-neutral-400 space-y-1">
+                <span className="text-xs">No tasks yet</span>
                 <button
                   type="button"
-                  onClick={() => handleDeleteTask(task.id)}
-                  title="Delete task"
-                  className="opacity-0 group-hover/task:opacity-100 p-1 rounded hover:bg-rose-500/10 text-neutral-400 hover:text-rose-500 transition-all cursor-pointer shrink-0"
+                  onClick={() => {
+                    setIsAddingTask(true)
+                    setTimeout(() => addInputRef.current?.focus(), 50)
+                  }}
+                  className="text-[11px] text-emerald-400 hover:underline cursor-pointer"
                 >
-                  <Trash2 className="h-3 w-3" />
+                  + Add a new task
                 </button>
               </div>
-            ))
+            )}
+          </div>
+
+          {/* Bottom Action / Add Task Form */}
+          {isAddingTask ? (
+            <form onSubmit={handleAddTask} className="titlebar-no-drag mt-2 flex items-center gap-1.5 bg-white/[0.08] border border-white/15 rounded-xl px-2.5 py-1.5 transition-all shrink-0">
+              <input
+                ref={addInputRef}
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder="Type a task & press Enter..."
+                maxLength={200}
+                className="flex-1 bg-transparent text-xs text-white placeholder:text-neutral-400 outline-none select-text"
+              />
+              <button
+                type="submit"
+                disabled={!inputText.trim()}
+                className="bg-emerald-400 hover:bg-emerald-300 disabled:opacity-30 text-neutral-950 text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer shadow-xs"
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAddingTask(false)}
+                className="text-[11px] text-neutral-400 hover:text-white px-1.5 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </form>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center p-3 text-neutral-400 space-y-1">
-              <span className="text-xs">No tasks yet</span>
-              <span className="text-[10px] text-neutral-400/80">Add one above to get started</span>
+            <div className="titlebar-drag-region flex items-center justify-between pt-2 border-t border-white/[0.06] shrink-0 mt-auto">
+              <span className="font-mono text-[10px] text-neutral-400">
+                {todos.length > 0 ? `${completedCount} of ${todos.length} completed` : '0 tasks'}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAddingTask(true)
+                  setTimeout(() => addInputRef.current?.focus(), 50)
+                }}
+                className="titlebar-no-drag bg-[#28282c] hover:bg-[#34343a] active:scale-95 text-neutral-200 hover:text-white text-[11px] font-medium px-3.5 py-1.5 rounded-full border border-white/10 shadow-sm transition-all cursor-pointer flex items-center gap-1"
+              >
+                <Plus className="h-3 w-3 text-neutral-300" />
+                <span>Add Task</span>
+              </button>
             </div>
           )}
-        </div>
-
-        {/* Bottom Footer: Stats */}
-        <div className="titlebar-drag-region flex items-center justify-between text-[10px] text-neutral-400 dark:text-neutral-500 pt-1.5 border-t border-black/[0.04] dark:border-white/[0.04] z-10 cursor-move">
-          <span className="font-mono">
-            {todos.length > 0 ? `${completedCount} of ${todos.length} completed` : '0 tasks'}
-          </span>
-          <span className="font-mono text-neutral-400">
-            Z-Widgets
-          </span>
         </div>
       </div>
     </div>
