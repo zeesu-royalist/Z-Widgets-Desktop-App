@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import {
   Plus, AppWindow, Eye, EyeOff, Trash2, Sparkles, Clock, Cpu, FileText,
   CloudSun, Layers, Power, Settings as SettingsIcon, CheckCircle2, CheckSquare,
   ChevronRight, Image as ImageIcon, Sun, Moon, LayoutGrid, X, RotateCcw,
-  Monitor, Terminal, Zap, ChevronDown, ChevronUp, Minimize2
+  Monitor, Terminal, Zap, ChevronDown, ChevronUp, Minimize2, ArrowLeft,
+  Share2, Tag, Search, Play, Pause, ExternalLink, Check, Sliders
 } from 'lucide-react'
 import { AppInfo, StartupSettings, PersistedWidgetConfig } from '../../shared/types'
 import {
@@ -13,19 +14,139 @@ import {
   WIDGET_TYPE_SYSTEM, WIDGET_TYPE_WEATHER, WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST
 } from '../../shared/constants'
 
-// --- Compact Widget Definitions ---
-const WIDGET_CATALOG = [
-  { id: DIGITAL_CLOCK_WIDGET_ID, name: 'Digital Clock', cat: 'Time & Date', desc: 'Minimalist desktop clock displaying live time and date.', w: 300, h: 160, x: 80, y: 80, type: WIDGET_TYPE_CLOCK, icon: <Clock className="h-5 w-5 text-blue-500" /> },
-  { id: QUICK_NOTES_WIDGET_ID, name: 'Quick Notes', cat: 'Productivity', desc: 'Desktop sticky note with auto-save and continuous persistence.', w: 320, h: 260, x: 410, y: 80, type: WIDGET_TYPE_NOTES, icon: <FileText className="h-5 w-5 text-amber-500" /> },
-  { id: TODO_WIDGET_ID, name: 'To-Do List', cat: 'Productivity', desc: 'Keep track of daily goals, tasks, and checklists directly on desktop.', w: 320, h: 340, x: 760, y: 80, type: WIDGET_TYPE_TODO, icon: <CheckSquare className="h-5 w-5 text-emerald-500" /> },
-  { id: SYSTEM_MONITOR_WIDGET_ID, name: 'System Resource Monitor', cat: 'Hardware & System', desc: 'Real-time CPU load, memory utilization, and hardware vital stats.', w: 320, h: 240, x: 80, y: 280, type: WIDGET_TYPE_SYSTEM, icon: <Cpu className="h-5 w-5 text-cyan-500" /> },
-  { id: WEATHER_WIDGET_ID, name: 'Live Weather', cat: 'Information & Forecast', desc: 'Real-time local temperature, condition, humidity, and forecast.', w: 320, h: 280, x: 410, y: 280, type: WIDGET_TYPE_WEATHER, icon: <CloudSun className="h-5 w-5 text-amber-500" /> },
-  { id: PHOTO_WIDGET_ID, name: 'Photo Slideshow', cat: 'Media & Gallery', desc: 'Continuous looping desktop photo frame for your favorite photos.', w: 320, h: 260, x: 760, y: 280, type: WIDGET_TYPE_PHOTO, icon: <ImageIcon className="h-5 w-5 text-purple-500" /> },
-  { id: DEV_TEST_WIDGET_ID, name: 'Host Window (Interactive)', cat: 'Development Host', desc: 'Frameless desktop test window with least-privilege IPC isolation.', w: 320, h: 180, x: 760, y: 560, type: WIDGET_TYPE_TEST, icon: <AppWindow className="h-5 w-5 text-indigo-500" />, isDev: true }
+// --- Widget Catalog with Visual Styling Attributes ---
+interface WidgetMeta {
+  id: string
+  name: string
+  caption: string
+  cat: string
+  desc: string
+  w: number
+  h: number
+  x: number
+  y: number
+  type: string
+  accentColor: string
+  cardStyle: 'photo' | 'canyon' | 'equalizer' | 'code' | 'weather' | 'tasks' | 'project'
+  icon: React.ReactNode
+  isDev?: boolean
+}
+
+const WIDGET_CATALOG: WidgetMeta[] = [
+  {
+    id: PHOTO_WIDGET_ID,
+    name: 'Photo Slideshow',
+    caption: 'aerial-01',
+    cat: 'Media & Gallery',
+    desc: 'Continuous looping desktop photo frame with hardware-accelerated ambient transitions.',
+    w: 320,
+    h: 260,
+    x: 760,
+    y: 280,
+    type: WIDGET_TYPE_PHOTO,
+    accentColor: '#0ea5e9',
+    cardStyle: 'photo',
+    icon: <ImageIcon className="h-4 w-4 text-cyan-400" />
+  },
+  {
+    id: DIGITAL_CLOCK_WIDGET_ID,
+    name: 'Digital Clock',
+    caption: 'canyon',
+    cat: 'Time & Date',
+    desc: 'Minimalist desktop clock displaying real-time hours, minutes, seconds, sleep metrics, and date.',
+    w: 260,
+    h: 260,
+    x: 80,
+    y: 80,
+    type: WIDGET_TYPE_CLOCK,
+    accentColor: '#ff5500',
+    cardStyle: 'canyon',
+    icon: <Clock className="h-4 w-4 text-orange-500" />
+  },
+  {
+    id: SYSTEM_MONITOR_WIDGET_ID,
+    name: 'System Resource Monitor',
+    caption: 'final soundtrack',
+    cat: 'Hardware & System',
+    desc: 'Real-time CPU load, memory utilization, and hardware vital stats with audio-waveform equalizer visuals.',
+    w: 320,
+    h: 240,
+    x: 80,
+    y: 280,
+    type: WIDGET_TYPE_SYSTEM,
+    accentColor: '#a855f7',
+    cardStyle: 'equalizer',
+    icon: <Cpu className="h-4 w-4 text-purple-400" />
+  },
+  {
+    id: QUICK_NOTES_WIDGET_ID,
+    name: 'Quick Notes',
+    caption: 'index',
+    cat: 'Productivity',
+    desc: 'Desktop sticky note with auto-save, markdown snippet formatting, and continuous persistence.',
+    w: 320,
+    h: 260,
+    x: 410,
+    y: 80,
+    type: WIDGET_TYPE_NOTES,
+    accentColor: '#eab308',
+    cardStyle: 'code',
+    icon: <FileText className="h-4 w-4 text-yellow-400" />
+  },
+  {
+    id: WEATHER_WIDGET_ID,
+    name: 'Live Weather',
+    caption: 'jellyfish',
+    cat: 'Information & Forecast',
+    desc: 'Atmospheric local temperature, conditions, humidity, and real-time forecast.',
+    w: 320,
+    h: 280,
+    x: 410,
+    y: 280,
+    type: WIDGET_TYPE_WEATHER,
+    accentColor: '#38bdf8',
+    cardStyle: 'weather',
+    icon: <CloudSun className="h-4 w-4 text-sky-400" />
+  },
+  {
+    id: TODO_WIDGET_ID,
+    name: 'To-Do List',
+    caption: 'project files',
+    cat: 'Productivity',
+    desc: 'Track daily goals, checklist priorities, and tasks with completion tracking on desktop.',
+    w: 320,
+    h: 340,
+    x: 760,
+    y: 80,
+    type: WIDGET_TYPE_TODO,
+    accentColor: '#10b981',
+    cardStyle: 'tasks',
+    icon: <CheckSquare className="h-4 w-4 text-emerald-400" />
+  },
+  {
+    id: DEV_TEST_WIDGET_ID,
+    name: 'Host Window (Interactive)',
+    caption: 'project',
+    cat: 'Development Host',
+    desc: 'Frameless desktop test window with least-privilege IPC isolation and boundary tests.',
+    w: 320,
+    h: 180,
+    x: 760,
+    y: 560,
+    type: WIDGET_TYPE_TEST,
+    accentColor: '#6366f1',
+    cardStyle: 'project',
+    icon: <AppWindow className="h-4 w-4 text-indigo-400" />,
+    isDev: true
+  }
 ]
+
 const WIDGET_MAP = new Map(WIDGET_CATALOG.map((w) => [w.id, w]))
 
-// --- Main App Dashboard ---
+// Equalizer waveform sample bars for System Monitor card
+const WAVE_BARS = [14, 22, 16, 28, 38, 26, 44, 52, 34, 48, 58, 62, 54, 46, 50, 40, 32, 36, 24, 28, 20, 16, 12, 10]
+
+// --- Main macOS Window App Component ---
 export const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null)
@@ -41,8 +162,23 @@ export const App: React.FC = () => {
   const [isPinging, setIsPinging] = useState<boolean>(false)
   const [ipcStatus, setIpcStatus] = useState<string>('Ready')
 
-  const widgetLibraryRef = useRef<HTMLDivElement>(null)
+  // macOS Navigation & UI state
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false)
+  const [cardScale, setCardScale] = useState<'normal' | 'compact' | 'large'>('normal')
+  const [copiedShare, setCopiedShare] = useState<boolean>(false)
+  const [currentTime, setCurrentTime] = useState<Date>(new Date())
 
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // Real-time ticking clock for clock card and status bar
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Sync dark class on document element
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode)
   }, [isDarkMode])
@@ -107,6 +243,18 @@ export const App: React.FC = () => {
     }
   }
 
+  const handleToggleAllVisibility = async (): Promise<void> => {
+    const allHidden = activeWidgets.every((id) => hiddenWidgetIds.has(id))
+    for (const id of activeWidgets) {
+      if (allHidden) {
+        await window.api?.showWidget?.(id)
+      } else {
+        await window.api?.hideWidget?.(id)
+      }
+    }
+    setHiddenWidgetIds(allHidden ? new Set() : new Set(activeWidgets))
+  }
+
   const handleRemoveWidget = async (id: string): Promise<void> => {
     try {
       await window.api?.closeWidget?.(id)
@@ -158,212 +306,775 @@ export const App: React.FC = () => {
     }
   }
 
+  const handleShareCreator = (): void => {
+    navigator.clipboard?.writeText('https://zeesu-royalist.vercel.app')
+    setCopiedShare(true)
+    setTimeout(() => setCopiedShare(false), 2000)
+  }
+
+  // Filtered widget catalog based on selected category and search query
+  const filteredWidgets = useMemo(() => {
+    return WIDGET_CATALOG.filter((w) => {
+      const matchesCat =
+        selectedCategory === 'all'
+          ? true
+          : selectedCategory === 'active'
+            ? activeWidgets.includes(w.id)
+            : w.cat === selectedCategory
+
+      const matchesSearch =
+        !searchQuery.trim() ||
+        w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        w.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        w.caption.toLowerCase().includes(searchQuery.toLowerCase())
+
+      return matchesCat && matchesSearch
+    })
+  }, [selectedCategory, searchQuery, activeWidgets])
+
+  // Category view title
+  const viewTitle = useMemo(() => {
+    if (searchQuery.trim()) return `Results for "${searchQuery}"`
+    switch (selectedCategory) {
+      case 'all': return 'Documents'
+      case 'active': return 'Active on Desktop'
+      case 'Time & Date': return 'Time & Date'
+      case 'Productivity': return 'Productivity'
+      case 'Hardware & System': return 'System & Hardware'
+      case 'Information & Forecast': return 'Live Weather'
+      case 'Media & Gallery': return 'Media & Photos'
+      default: return 'Documents'
+    }
+  }, [selectedCategory, searchQuery])
+
+  // Formatted digital time
+  const formattedTime = useMemo(() => {
+    return currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  }, [currentTime])
+
+  const formattedDate = useMemo(() => {
+    return currentTime.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
+  }, [currentTime])
+
   const isClockActive = activeWidgets.includes(DIGITAL_CLOCK_WIDGET_ID)
 
-  // Map active widgets in O(1)
-  const myWidgets = activeWidgets.map((id) => {
-    const isHidden = hiddenWidgetIds.has(id)
-    const def = WIDGET_MAP.get(id)
-    const persisted = persistedWidgets.find((p) => p.id === id)
-    return {
-      id,
-      name: def?.name || `Widget ${id}`,
-      type: def?.cat ? `${def.cat} Widget` : persisted?.type || 'Desktop Widget',
-      dimensions: def ? `${def.w} × ${def.h}` : (persisted ? `${persisted.width} × ${persisted.height}` : '320 × 200'),
-      isHidden,
-      isPersistent: id !== DEV_TEST_WIDGET_ID,
-      icon: def?.icon || <Sparkles className="h-5 w-5 text-blue-500" />
-    }
-  })
-
   return (
-    <div className="h-screen w-screen flex flex-col bg-gradient-to-b from-neutral-100 via-neutral-100 to-neutral-200 dark:from-[#0a0a0c] dark:via-[#0e1014] dark:to-[#12141a] text-neutral-900 dark:text-neutral-100 transition-colors duration-300 font-sans select-none overflow-hidden">
-      {/* Header */}
-      <header className="titlebar-drag-region h-14 w-full flex items-center justify-between px-6 border-b border-black/[0.06] dark:border-white/[0.06] bg-white/60 dark:bg-[#0c0d10]/60 backdrop-blur-xl z-20 sticky top-0 transition-colors">
-        <div className={`flex items-center gap-2.5 ${appInfo?.platform === 'darwin' ? 'pl-16' : 'pl-0'}`}>
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-sm shadow-emerald-500/20 font-bold text-xs">
-            Z
-          </div>
-          <span className="text-sm font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">Z-Widgets</span>
-        </div>
-        <div className="titlebar-no-drag flex items-center gap-1.5">
-          <button onClick={() => setIsDarkMode((prev) => !prev)} aria-label="Toggle appearance theme" title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'} className="p-2 rounded-apple-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer">
-            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
-          <button onClick={() => setIsSettingsOpen(true)} aria-label="Open settings" title="Settings" className={`p-2 rounded-apple-sm transition-colors cursor-pointer ${isSettingsOpen ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'}`}>
-            <SettingsIcon className="h-4 w-4" />
-          </button>
-        </div>
-      </header>
+    <div className="h-screen w-screen flex bg-[#ececec] dark:bg-[#121316] text-neutral-800 dark:text-neutral-200 select-none overflow-hidden font-sans antialiased transition-colors duration-200">
 
-      <main className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 max-w-5xl w-full mx-auto space-y-10">
-        {/* Hero Section */}
-        <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
-          <div className="space-y-1.5 max-w-xl">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">Your Desktop, Your Way</h1>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">Place interactive desktop widgets directly on your wallpaper. Toggle visibility, manage positions, and keep essential tools in sight.</p>
-          </div>
-          <button
-            onClick={() => !isClockActive ? handleCreateWidget(WIDGET_CATALOG[0]) : widgetLibraryRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-apple-md bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
-          >
-            <Plus className="h-4 w-4" />
-            <span>{!isClockActive ? 'Add Digital Clock' : 'Add Widget'}</span>
-          </button>
-        </section>
+      {/* ========================================================
+          LEFT SIDEBAR (macOS Translucent Frosted Sidebar)
+          ======================================================== */}
+      <aside className="w-56 shrink-0 flex flex-col bg-[#e7e7eb]/80 dark:bg-[#1a1b20]/80 backdrop-blur-2xl border-r border-black/[0.08] dark:border-white/[0.08] transition-colors relative z-20">
 
-        {/* My Widgets Section */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">My Widgets</h2>
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-neutral-300">{myWidgets.length} Active</span>
-            </div>
-            {myWidgets.length > 0 && <span className="text-xs text-neutral-400 dark:text-neutral-500">Running in background</span>}
-          </div>
-
-          {myWidgets.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {myWidgets.map((w) => (
-                <div key={w.id} className="glass-panel rounded-apple-xl p-4 flex flex-col justify-between gap-4 border border-black/10 dark:border-white/10 shadow-glass-light dark:shadow-glass-dark">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-apple-sm bg-black/5 dark:bg-white/5 flex items-center justify-center">{w.icon}</div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{w.name}</h3>
-                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-mono mt-0.5">id: {w.id} • {w.dimensions}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`w-2 h-2 rounded-full ${w.isHidden ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-                      <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">{w.isHidden ? 'Hidden' : 'Visible'}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-black/[0.04] dark:border-white/[0.04]">
-                    <div className="text-[11px] text-neutral-400">{w.isPersistent ? 'Saved to local storage' : 'Development session'}</div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => handleToggleWidgetVisibility(w.id)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-apple-sm text-xs font-medium bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer" title={w.isHidden ? 'Show on desktop' : 'Hide from desktop'}>
-                        {w.isHidden ? <><Eye className="h-3.5 w-3.5" /><span>Show</span></> : <><EyeOff className="h-3.5 w-3.5" /><span>Hide</span></>}
-                      </button>
-                      <button onClick={() => handleRemoveWidget(w.id)} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-apple-sm text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer" title="Remove widget">
-                        <Trash2 className="h-3.5 w-3.5" />
-                        <span>Remove</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="p-8 rounded-apple-xl border border-dashed border-black/15 dark:border-white/15 bg-black/[0.01] dark:bg-white/[0.01] flex flex-col items-center justify-center text-center space-y-3">
-              <div className="h-12 w-12 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center"><Layers className="h-6 w-6" /></div>
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">No widgets active on your desktop</h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-sm">Add the Digital Clock below to enjoy live time and date directly on your desktop.</p>
-              </div>
-              <button onClick={() => handleCreateWidget(WIDGET_CATALOG[0])} className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-apple-sm bg-blue-600 text-white text-xs font-semibold hover:bg-blue-500 shadow-sm transition-colors cursor-pointer">
-                <Plus className="h-3.5 w-3.5" /><span>Add Digital Clock</span>
-              </button>
+        {/* macOS Traffic Lights Margin / Window Drag Area */}
+        <div className="titlebar-drag-region h-11 w-full flex items-center px-4 gap-2">
+          {/* On non-macOS platforms or fallback, show standard colored macOS dots */}
+          {appInfo?.platform !== 'darwin' && (
+            <div className="titlebar-no-drag flex items-center gap-2">
+              <button onClick={() => window.api?.hideWindow?.()} className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] hover:brightness-90 transition-all cursor-pointer" title="Close / Hide" />
+              <button onClick={() => window.api?.hideWindow?.()} className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] hover:brightness-90 transition-all cursor-pointer" title="Minimize" />
+              <button className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] hover:brightness-90 transition-all cursor-pointer" title="Zoom" />
             </div>
           )}
-        </section>
+        </div>
 
-        {/* Widget Library Section */}
-        <section ref={widgetLibraryRef} className="space-y-6 pt-2">
-          <div>
-            <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">Widget Library</h2>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Choose from available widgets. All active widgets feature frameless transparent rendering and space persistence.</p>
+        {/* macOS Toolbar Row (Back, Share, Eye QuickLook, Tag, Search) */}
+        <div className="titlebar-no-drag px-3 pb-3 flex items-center justify-between border-b border-black/[0.05] dark:border-white/[0.05]">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => { setSelectedCategory('all'); setSearchQuery('') }}
+              className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
+              title="Back to All Documents"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={handleShareCreator}
+              className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer relative"
+              title="Share / Copy Creator Website"
+            >
+              {copiedShare ? <Check className="h-4 w-4 text-emerald-500" /> : <Share2 className="h-4 w-4" />}
+            </button>
+            <button
+              onClick={handleToggleAllVisibility}
+              className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
+              title="Quick Look: Toggle show/hide all desktop widgets"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setSelectedCategory((prev) => prev === 'active' ? 'all' : 'active')}
+              className={`p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer ${selectedCategory === 'active' ? 'text-blue-500 bg-blue-500/10' : 'text-neutral-600 dark:text-neutral-400'}`}
+              title="Filter Active Widgets"
+            >
+              <Tag className="h-4 w-4" />
+            </button>
+          </div>
+          <button
+            onClick={() => {
+              setIsSearchOpen((prev) => !prev)
+              setTimeout(() => searchInputRef.current?.focus(), 50)
+            }}
+            className={`p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer ${isSearchOpen ? 'text-blue-500 bg-blue-500/10' : 'text-neutral-600 dark:text-neutral-400'}`}
+            title="Search widgets"
+          >
+            <Search className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Sidebar Navigation Items */}
+        <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5 text-[13px] font-normal">
+          {([
+            { id: 'all', label: 'All My Files', icon: LayoutGrid, count: WIDGET_CATALOG.length },
+            { id: 'active', label: 'Active on Desktop', icon: Monitor, count: activeWidgets.length, isPill: true },
+            { id: 'Time & Date', label: 'Time & Date', icon: Clock, count: 1 },
+            { id: 'Productivity', label: 'Documents', icon: FileText, count: 2 },
+            { id: 'Hardware & System', label: 'Applications', icon: Cpu, count: 1 },
+            { id: 'Information & Forecast', label: 'Live Weather', icon: CloudSun, count: 1 },
+            { id: 'Media & Gallery', label: 'Downloads / Media', icon: ImageIcon, count: 1 }
+          ] as const).map((item) => {
+            const isSelected = selectedCategory === item.id
+            const Icon = item.icon
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setSelectedCategory(item.id)
+                  setSearchQuery('')
+                }}
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md transition-all cursor-pointer text-left ${isSelected
+                  ? 'bg-black/[0.08] dark:bg-white/[0.12] text-neutral-900 dark:text-white font-medium shadow-xs'
+                  : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.05]'
+                  }`}
+              >
+                <div className="flex items-center gap-2.5 truncate">
+                  <Icon className={`h-4 w-4 shrink-0 ${isSelected ? 'text-blue-500' : 'text-neutral-500 dark:text-neutral-400'}`} />
+                  <span className="truncate">{item.label}</span>
+                </div>
+                {item.count > 0 && (
+                  <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-mono ${isSelected
+                    ? 'bg-black/10 dark:bg-white/20 text-neutral-800 dark:text-neutral-100'
+                    : 'text-neutral-400 dark:text-neutral-500'
+                    }`}>
+                    {item.count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </nav>
+
+        {/* Sidebar Footer: Creator Branding + Theme & Settings */}
+        <div className="p-3 border-t border-black/[0.06] dark:border-white/[0.06] space-y-2">
+          {/* Creator Profile Card (Zeesu Royalist) */}
+          <a
+            href="https://zeesu-royalist.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+            title="Search 'Zeesu Royalist' on Google or ask any AI"
+            className="group flex items-center justify-between p-2 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] border border-black/[0.04] dark:border-white/[0.06] transition-all cursor-pointer"
+          >
+            <div className="flex items-center gap-2 truncate">
+              <div className="h-6 w-6 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-[10px] shrink-0 shadow-xs">
+                ZR
+              </div>
+              <div className="truncate">
+                <p className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors truncate">
+                  Zeesu Royalist
+                </p>
+                <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">
+                  Creator & Founder
+                </p>
+              </div>
+            </div>
+            <ExternalLink className="h-3 w-3 text-neutral-400 group-hover:text-emerald-500 shrink-0 ml-1 transition-colors" />
+          </a>
+
+          {/* Quick Actions (Appearance & Settings) */}
+          <div className="flex items-center justify-between pt-1">
+            <button
+              onClick={() => setIsDarkMode((prev) => !prev)}
+              aria-label="Toggle theme appearance"
+              className="p-1.5 rounded-md text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+            <div className="flex items-center gap-1 text-[11px] text-neutral-400">
+              <span className={`w-1.5 h-1.5 rounded-full ${activeWidgets.length > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-400'}`} />
+              <span>{activeWidgets.length} active</span>
+            </div>
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label="Open settings"
+              className="p-1.5 rounded-md text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+              title="Window & Display Settings"
+            >
+              <SettingsIcon className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* ========================================================
+          MAIN CONTENT CANVAS (macOS Finder / Documents Window)
+          ======================================================== */}
+      <main className="flex-1 flex flex-col bg-[#fbfbfb]/90 dark:bg-[#18191d]/90 backdrop-blur-3xl overflow-hidden relative">
+
+        {/* Top Header Bar (Draggable Titlebar Region) */}
+        <header className="titlebar-drag-region h-14 shrink-0 px-8 flex items-center justify-between border-b border-black/[0.05] dark:border-white/[0.05]">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
+              {viewTitle}
+            </h1>
+            <span className="text-xs text-neutral-400 font-normal">
+              {filteredWidgets.length} item{filteredWidgets.length !== 1 ? 's' : ''}
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {WIDGET_CATALOG.map((widget) => {
+          <div className="titlebar-no-drag flex items-center gap-3">
+            {/* Search Input Bar (Visible when toggled or search text exists) */}
+            {(isSearchOpen || searchQuery) && (
+              <div className="relative flex items-center">
+                <Search className="h-3.5 w-3.5 text-neutral-400 absolute left-2.5 pointer-events-none" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search widgets..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-8 pr-7 py-1 text-xs rounded-md bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-1 focus:ring-blue-500 text-neutral-900 dark:text-white w-44 transition-all"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200">
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Quick Add Button */}
+            <button
+              onClick={() => !isClockActive ? handleCreateWidget(WIDGET_CATALOG[1]) : handleCreateWidget(filteredWidgets[0] || WIDGET_CATALOG[0])}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-medium shadow-xs transition-all cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>{!isClockActive ? 'Add Digital Clock' : 'Add Widget'}</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Content Body: Media Cards Canvas (Inspired by Reference Image!) */}
+        <div className="flex-1 overflow-y-auto p-8">
+          <div className={`grid gap-6 ${cardScale === 'compact'
+            ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
+            : cardScale === 'large'
+              ? 'grid-cols-1 md:grid-cols-2'
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            }`}>
+            {filteredWidgets.map((widget) => {
               const isActive = activeWidgets.includes(widget.id)
-              return (
-                <div key={widget.id} className="glass-panel rounded-apple-xl p-5 flex flex-col justify-between gap-4 border border-black/10 dark:border-white/10 shadow-glass-light dark:shadow-glass-dark">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-apple-sm bg-black/5 dark:bg-white/5 flex items-center justify-center">{widget.icon}</div>
+              const isHidden = hiddenWidgetIds.has(widget.id)
+
+              // -------------------------------------------------------------
+              // 1. Photo Slideshow (aerial-01 style: Ocean aerial preview)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'photo') {
+                return (
+                  <div key={widget.id} className="flex flex-col items-center group">
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-black/5 dark:border-white/10 bg-gradient-to-tr from-cyan-600 via-teal-600 to-blue-700 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+                      {/* Aerial Ocean Water Simulation Overlay */}
+                      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/30 via-transparent to-black/40 pointer-events-none" />
+
+                      {/* Play Button Icon Overlay (as seen in aerial-01 in image) */}
+                      <button
+                        onClick={() => !isActive ? handleCreateWidget(widget) : handleToggleWidgetVisibility(widget.id)}
+                        className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/30 hover:bg-white/40 active:scale-95 backdrop-blur-md border border-white/40 flex items-center justify-center text-white transition-all cursor-pointer shadow-sm"
+                        title={isActive ? 'Toggle visibility on desktop' : 'Launch photo slideshow on desktop'}
+                      >
+                        <Play className="h-3.5 w-3.5 fill-white ml-0.5" />
+                      </button>
+
+                      {/* Top Right Size Badge */}
+                      <span className="absolute top-3 right-3 text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/30 backdrop-blur-sm text-white/90 border border-white/10">
+                        {widget.w} × {widget.h}
+                      </span>
+
+                      {/* Bottom Content Area */}
+                      <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                         <div>
-                          <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{widget.name}</h3>
-                          <span className="text-[11px] text-neutral-500 dark:text-neutral-400">{widget.cat}</span>
+                          <p className="text-white font-bold text-sm tracking-wide drop-shadow-sm">
+                            {widget.caption}
+                          </p>
+                          <p className="text-white/80 text-[11px] drop-shadow-sm">
+                            {widget.name}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                          className={`text-xs px-2.5 py-1 rounded-md font-semibold backdrop-blur-md transition-all cursor-pointer ${isActive
+                            ? 'bg-white/20 hover:bg-rose-500/80 text-white border border-white/30'
+                            : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
+                            }`}
+                        >
+                          {isActive ? 'Active' : '+ Add'}
+                        </button>
+                      </div>
+                    </div>
+                    {/* Clean caption below tile, matching the image */}
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 2. Digital Clock (canyon style: Sunset glow & live ticking clock)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'canyon') {
+                return (
+                  <div key={widget.id} className="flex flex-col items-center group">
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/30 border border-white/10 bg-[#000000] p-3.5 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl text-white">
+                      {/* Top Header */}
+                      <div className="flex items-center justify-between z-10">
+                        <span className="text-xs font-medium tracking-tight text-white/90">
+                          {formattedDate}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-emerald-400 animate-pulse' : 'bg-white/30'}`} />
+                          <span className="text-[10px] text-white/80 font-mono">
+                            {isActive ? (isHidden ? 'Hidden' : 'Live') : 'Offline'}
+                          </span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                        {widget.isDev ? 'Dev Test Host' : 'Live Widget'}
+
+                      {/* Center Hero: Thin Digital Time with Superscript Seconds */}
+                      <div className="my-auto py-0.5 flex items-start z-10">
+                        <span className="text-3xl sm:text-4xl font-extralight tracking-tight text-white font-mono tabular-nums leading-none">
+                          {formattedTime.split(' ')[0]}
+                        </span>
+                        <span className="text-[10px] font-light text-white/80 font-mono ml-1 -mt-0.5">
+                          {currentTime.getSeconds().toString().padStart(2, '0')}
+                        </span>
+                      </div>
+
+                      {/* Mini Orange Day Progress Pill Preview */}
+                      <div className="w-full bg-[#ff5500] rounded-xl px-2.5 py-1 text-black shadow-sm z-10">
+                        <div className="flex items-center justify-between text-[9px] font-mono font-bold leading-none">
+                          <span>00:00</span>
+                          <span className="bg-black/15 px-1 py-0.5 rounded text-[8px]">Day Progress</span>
+                          <span>24:00</span>
+                        </div>
+                        <div className="relative w-full h-1.5 my-1 flex items-center">
+                          <div className="w-full h-1 flex justify-between items-center opacity-60">
+                            {Array.from({ length: 24 }).map((_, i) => (
+                              <span key={i} className="w-[1px] h-1 bg-black" />
+                            ))}
+                          </div>
+                          <div className="absolute left-0 h-[1.5px] bg-black rounded-full" style={{ width: '62%' }} />
+                        </div>
+                      </div>
+
+                      {/* Bottom Controls */}
+                      <div className="flex items-center justify-between relative z-10 pt-1">
+                        <span className="text-[10px] text-white/80 font-mono">Z-Widgets</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleToggleWidgetVisibility(widget.id)}
+                            disabled={!isActive}
+                            className="text-[10px] text-white/70 hover:text-white disabled:opacity-40 transition-colors cursor-pointer flex items-center gap-1"
+                          >
+                            {isHidden ? <><Eye className="h-3 w-3" /><span>Show</span></> : <><EyeOff className="h-3 w-3" /><span>Hide</span></>}
+                          </button>
+                          <button
+                            onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                            className={`text-xs px-2.5 py-0.5 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                              ? 'bg-white/20 hover:bg-rose-500/80 text-white border border-white/30'
+                              : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
+                              }`}
+                          >
+                            {isActive ? 'Active' : '+ Add'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 3. System Resource Monitor (final soundtrack style: Waveform Equalizer)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'equalizer') {
+                return (
+                  <div key={widget.id} className="col-span-1 sm:col-span-2 flex flex-col group">
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-purple-400/20 dark:border-purple-500/20 bg-gradient-to-r from-purple-300/70 via-purple-200/60 to-indigo-200/70 dark:from-[#2e2042]/90 dark:via-[#261938]/90 dark:to-[#312047]/90 p-5 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+                      {/* Top Bar: Title & Telemetry */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            onClick={() => !isActive ? handleCreateWidget(widget) : handleToggleWidgetVisibility(widget.id)}
+                            className="w-7 h-7 rounded-full bg-purple-600 dark:bg-purple-500 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm"
+                            title="Pause / Resume Monitoring"
+                          >
+                            <Pause className="h-3 w-3 fill-white" />
+                          </button>
+                          <div>
+                            <h3 className="text-xs font-bold text-neutral-900 dark:text-neutral-100 uppercase tracking-wider font-mono">
+                              System Monitor
+                            </h3>
+                            <p className="text-[11px] text-neutral-600 dark:text-neutral-400">
+                              Real-time CPU & Hardware Telemetry
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/20 font-semibold">
+                            CPU 14%
+                          </span>
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 font-semibold">
+                            RAM 4.1GB
+                          </span>
+                          <button
+                            onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                            className={`text-xs px-3 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                              ? 'bg-black/10 dark:bg-white/10 hover:bg-rose-500 hover:text-white text-neutral-800 dark:text-neutral-200'
+                              : 'bg-purple-600 hover:bg-purple-500 text-white shadow-sm'
+                              }`}
+                          >
+                            {isActive ? 'Active' : '+ Add'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Center: Live Waveform / Equalizer Bars (directly matching final soundtrack) */}
+                      <div className="flex items-end justify-between gap-1.5 h-16 px-2 pt-2">
+                        {WAVE_BARS.map((height, i) => (
+                          <div
+                            key={i}
+                            style={{ height: `${height}px` }}
+                            className="flex-1 rounded-full bg-gradient-to-t from-purple-600 via-purple-400 to-indigo-200 dark:from-purple-500 dark:via-purple-300 dark:to-white transition-all duration-500 hover:opacity-80"
+                          />
+                        ))}
+                      </div>
+
+                      {/* Bottom Info Row */}
+                      <div className="flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400 pt-1 font-mono">
+                        <span>Frequency: 1.0s interval</span>
+                        <span>Multi-core Load Normal</span>
+                      </div>
+                    </div>
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 4. Quick Notes (index style: Dark syntax-highlighted code pill)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'code') {
+                return (
+                  <div key={widget.id} className="flex flex-col items-center group">
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-white/10 bg-[#1e2026] text-white p-4 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl font-mono">
+                      {/* Top Code Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
+                          <span className="text-cyan-400 font-bold">&lt;&gt;</span>
+                          <span className="text-neutral-300 font-sans text-xs">notes.md</span>
+                        </div>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-neutral-300">
+                          auto-save
+                        </span>
+                      </div>
+
+                      {/* Code Snippet Lines Preview */}
+                      <div className="space-y-1 text-xs py-1">
+                        <p className="text-pink-400">&lt;html&gt;</p>
+                        <p className="text-neutral-400 pl-3">
+                          &lt;<span className="text-purple-400">meta</span> <span className="text-amber-300">charset</span>=<span className="text-emerald-400">&quot;utf-8&quot;</span>&gt;
+                        </p>
+                        <p className="text-neutral-400 pl-3">
+                          &lt;<span className="text-purple-400">title</span>&gt;Z-Widgets Notes&lt;/<span className="text-purple-400">title</span>&gt;
+                        </p>
+                      </div>
+
+                      {/* Bottom Controls */}
+                      <div className="flex items-center justify-between pt-1 border-t border-white/10 font-sans">
+                        <span className="text-[11px] text-neutral-400">Continuous save</span>
+                        <button
+                          onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                          className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                            ? 'bg-white/10 hover:bg-rose-500 text-white'
+                            : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
+                            }`}
+                        >
+                          {isActive ? 'Active' : '+ Add'}
+                        </button>
+                      </div>
+                    </div>
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 5. Live Weather (Dual-Card Aesthetic matching WeatherWidget)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'weather') {
+                return (
+                  <div key={widget.id} className="flex flex-col items-center group">
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg border border-white/10 bg-[#000000] p-2 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl text-white select-none">
+                      {/* Top Soft Blue Card */}
+                      <div className="w-full bg-[#9db3c5] rounded-xl px-2.5 py-1.5 flex flex-col justify-between text-black">
+                        <div className="flex items-start justify-between leading-none">
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xl font-light tracking-tight font-sans" style={{ fontWeight: 300 }}>
+                                24°
+                              </span>
+                              <CloudSun className="h-4 w-4 text-black fill-black" />
+                            </div>
+                            <span className="text-[9px] font-semibold text-black/85 mt-0.5">Partly Cloudy</span>
+                          </div>
+                          <div className="flex flex-col items-end text-right">
+                            <span className="text-[10px] font-bold">Amsterdam</span>
+                            <span className="text-[8.5px] font-mono text-black/80 mt-0.5">H: 27° L: 23° ↗ 4</span>
+                          </div>
+                        </div>
+
+                        {/* Mini Hourly Strip */}
+                        <div className="flex items-center justify-between pt-1 border-t border-black/10 mt-1 text-[8px] font-mono">
+                          {[
+                            ['Now', '20°'],
+                            ['14', '20°'],
+                            ['16', '20°'],
+                            ['18', '16°'],
+                            ['20', '15°'],
+                            ['22', '15°']
+                          ].map(([h, t], i) => (
+                            <div key={i} className="flex flex-col items-center">
+                              <span className={i === 0 ? 'font-bold' : 'opacity-70'}>{h}</span>
+                              <span className="font-semibold">{t}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Bottom Charcoal Card */}
+                      <div className="w-full bg-[#1c1e22] rounded-xl px-2.5 py-1.5 flex flex-col justify-between flex-1 mt-1 text-white">
+                        <div className="space-y-0.5 text-[9px] font-mono">
+                          <div className="flex items-center justify-between leading-none">
+                            <span className="text-white/90">Monday</span>
+                            <span className="text-slate-400">☁️</span>
+                            <span className="text-neutral-400">↗ 6</span>
+                            <div className="flex items-center gap-1">
+                              <span className="text-neutral-400">9°</span>
+                              <div className="w-6 h-1 bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full w-3/4 bg-gradient-to-r from-sky-400 to-orange-400 rounded-full" />
+                              </div>
+                              <span className="text-white font-bold">22°</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between leading-none">
+                            <span className="text-white/90">Tuesday</span>
+                            <span className="text-amber-400">🌤️</span>
+                            <span className="text-neutral-400">↗ 4</span>
+                            <div className="flex items-center gap-1">
+                              <span className="text-neutral-400">11°</span>
+                              <div className="w-6 h-1 bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full w-4/5 bg-gradient-to-r from-sky-400 to-orange-400 rounded-full ml-1" />
+                              </div>
+                              <span className="text-white font-bold">25°</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bottom Actions Row */}
+                        <div className="flex items-center justify-between pt-1 border-t border-white/[0.08] text-[9px]">
+                          <span className="text-[8.5px] font-mono text-neutral-400">58% Hum • 24°C</span>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => handleToggleWidgetVisibility(widget.id)}
+                              disabled={!isActive}
+                              className="text-[9px] text-white/70 hover:text-white disabled:opacity-40 transition-colors cursor-pointer flex items-center gap-0.5"
+                            >
+                              {isHidden ? <><Eye className="h-2.5 w-2.5" /><span>Show</span></> : <><EyeOff className="h-2.5 w-2.5" /><span>Hide</span></>}
+                            </button>
+                            <button
+                              onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                              className={`text-[10px] px-2 py-0.5 rounded font-semibold transition-all cursor-pointer ${isActive
+                                ? 'bg-white/20 hover:bg-rose-500/80 text-white border border-white/30'
+                                : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
+                                }`}
+                            >
+                              {isActive ? 'Active' : '+ Add'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 6. To-Do List (project files style: Multi-preview tasks tile)
+              // -------------------------------------------------------------
+              if (widget.cardStyle === 'tasks') {
+                return (
+                  <div key={widget.id} className="flex flex-col items-center group">
+                    <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-indigo-400/20 dark:border-indigo-500/20 bg-gradient-to-br from-indigo-100/70 to-purple-100/70 dark:from-[#212330]/90 dark:to-[#28273c]/90 p-4 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+                      {/* Top Dual Preview Cards (matching project files) */}
+                      <div className="grid grid-cols-2 gap-2 h-20">
+                        <div className="rounded-xl p-2 bg-gradient-to-br from-purple-800 to-indigo-950 text-white flex flex-col justify-between shadow-xs">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                          <p className="text-[10px] font-medium leading-tight truncate">Ship M6 Core</p>
+                        </div>
+                        <div className="rounded-xl p-2 bg-gradient-to-br from-blue-700 to-cyan-900 text-white flex flex-col justify-between shadow-xs">
+                          <CheckSquare className="h-3.5 w-3.5 text-cyan-300" />
+                          <p className="text-[10px] font-medium leading-tight truncate">macOS Design</p>
+                        </div>
+                      </div>
+
+                      {/* Bottom Title & Button */}
+                      <div className="flex items-center justify-between pt-1">
+                        <div>
+                          <p className="text-xs font-bold text-neutral-900 dark:text-neutral-100">
+                            {widget.caption}
+                          </p>
+                          <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+                            2 of 3 completed
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                          className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                            ? 'bg-black/10 dark:bg-white/10 hover:bg-rose-500 hover:text-white text-neutral-800 dark:text-neutral-200'
+                            : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
+                            }`}
+                        >
+                          {isActive ? 'Active' : '+ Add'}
+                        </button>
+                      </div>
+                    </div>
+                    <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                      {widget.caption}
+                    </span>
+                  </div>
+                )
+              }
+
+              // -------------------------------------------------------------
+              // 7. Host Window (project style: Frameless test host card)
+              // -------------------------------------------------------------
+              return (
+                <div key={widget.id} className="flex flex-col items-center group">
+                  <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-teal-500/20 bg-gradient-to-br from-emerald-900/50 via-teal-950/70 to-slate-900/90 text-white p-4 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+                    <div className="flex items-center justify-between">
+                      <span className="p-1.5 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-400/30">
+                        <AppWindow className="h-4 w-4" />
+                      </span>
+                      <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded-full bg-white/10 text-teal-200">
+                        Host Window
                       </span>
                     </div>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">{widget.desc}</p>
-                  </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-black/[0.04] dark:border-white/[0.04]">
-                    <span className="text-[11px] text-neutral-400">Size: {widget.w} × {widget.h}</span>
-                    <button
-                      onClick={() => !isActive ? handleCreateWidget(widget) : handleToggleWidgetVisibility(widget.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-apple-sm text-xs font-semibold transition-all cursor-pointer ${isActive ? 'bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm'}`}
-                    >
-                      {isActive ? <><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /><span>Active on Desktop</span></> : <><Plus className="h-3.5 w-3.5" /><span>Add to Desktop</span></>}
-                    </button>
+                    <div className="my-auto">
+                      <p className="text-xs font-semibold text-white">Interactive Frame</p>
+                      <p className="text-[11px] text-teal-200/70 font-mono">320 × 180 • IPC Isolated</p>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[10px] text-teal-300/60 font-mono">Dev Test Host</span>
+                      <button
+                        onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
+                        className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
+                          ? 'bg-white/20 hover:bg-rose-500 text-white'
+                          : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
+                          }`}
+                      >
+                        {isActive ? 'Active' : '+ Add'}
+                      </button>
+                    </div>
                   </div>
+                  <span className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 transition-colors">
+                    {widget.caption}
+                  </span>
                 </div>
               )
             })}
           </div>
+        </div>
 
-          {/* Upcoming Roadmap */}
-          <div className="space-y-3 pt-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">Upcoming Modules (In Development)</h3>
-              <span className="text-[11px] text-neutral-400">Milestone 6 Modular Architecture</span>
-            </div>
-            <div className="p-4 rounded-apple-md bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.05] dark:border-white/[0.05] flex items-center justify-between opacity-75">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-apple-sm bg-black/5 dark:bg-white/5"><Layers className="h-5 w-5 text-neutral-400" /></div>
-                <div>
-                  <h4 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">Quick Calculator</h4>
-                  <p className="text-[11px] text-neutral-400 dark:text-neutral-500">Compact desktop calculator with history tape and quick conversion tools.</p>
-                </div>
-              </div>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">Coming Soon</span>
-            </div>
+        {/* ========================================================
+            BOTTOM STATUS BAR (macOS Finder slider + Breadcrumb)
+            ======================================================== */}
+        <footer className="h-11 shrink-0 px-8 flex items-center justify-between border-t border-black/[0.06] dark:border-white/[0.06] bg-white/50 dark:bg-black/20 backdrop-blur-xl text-xs text-neutral-500 dark:text-neutral-400">
+
+          {/* Left: Startup Status Indicator */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleToggleStartup}
+              disabled={isUpdatingStartup || !startupSettings?.isSupported}
+              className="flex items-center gap-1.5 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+              title="Click to toggle Launch at Login"
+            >
+              <span className={`w-2 h-2 rounded-full ${startupSettings?.openAtLogin ? 'bg-emerald-500' : 'bg-neutral-400'}`} />
+              <span className="text-[11px]">
+                {isUpdatingStartup ? 'Saving...' : startupSettings?.openAtLogin ? 'Login Startup: Enabled' : 'Login Startup: Disabled'}
+              </span>
+            </button>
           </div>
-        </section>
 
-        {/* Quick Settings Card */}
-        <section className="pt-2">
-          <div className="glass-panel rounded-apple-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-black/10 dark:border-white/10 shadow-glass-light dark:shadow-glass-dark">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-apple-sm bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"><Power className="h-4 w-4" /></div>
-              <div>
-                <p className="text-xs font-semibold text-neutral-900 dark:text-neutral-100">Launch Z-Widgets at Login</p>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                  {startupSettings?.openAtLogin ? 'Application launches automatically in the system tray' : 'Automatic startup is currently turned off'}
-                </p>
-              </div>
+          {/* Center: macOS Window Size Slider */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-neutral-400">Size</span>
+            <div className="h-1.5 w-24 bg-black/10 dark:bg-white/10 rounded-full relative flex items-center">
+              <button
+                onClick={() => setCardScale((prev) => prev === 'compact' ? 'normal' : prev === 'normal' ? 'large' : 'compact')}
+                className={`h-3.5 w-3.5 rounded-full bg-white dark:bg-neutral-200 shadow-md border border-black/10 transition-all cursor-pointer ${cardScale === 'compact' ? 'left-0' : cardScale === 'normal' ? 'left-[40%]' : 'left-[85%]'
+                  } absolute`}
+                title={`View Scale: ${cardScale} (Click to cycle)`}
+              />
             </div>
-            <div className="flex items-center gap-3">
-              <button onClick={handleToggleStartup} disabled={isUpdatingStartup || !startupSettings?.isSupported} className={`px-3 py-1.5 rounded-apple-sm text-xs font-semibold transition-all cursor-pointer ${startupSettings?.openAtLogin ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm' : 'bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200'}`}>
-                {isUpdatingStartup ? 'Saving...' : startupSettings?.openAtLogin ? 'Enabled' : 'Enable'}
-              </button>
-              <button onClick={() => setIsSettingsOpen(true)} className="inline-flex items-center gap-1 text-xs font-medium text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors cursor-pointer pl-2 border-l border-black/10 dark:border-white/10">
-                <SettingsIcon className="h-3.5 w-3.5" /><span>Display & More</span><ChevronRight className="h-3 w-3" />
-              </button>
-            </div>
+            <span className="text-[10px] font-mono capitalize text-neutral-400">{cardScale}</span>
           </div>
-        </section>
 
-        <footer className="pt-4 pb-6 border-t border-black/[0.04] dark:border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-neutral-400 dark:text-neutral-500">
-          <div className="flex items-center gap-1.5">
-            <span>Z-Widgets • Created by</span>
-            <a href="https://zeesu-royalist.vercel.app" target="_blank" rel="noreferrer" className="font-semibold text-neutral-800 dark:text-neutral-200 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors underline decoration-neutral-300 dark:decoration-neutral-700 underline-offset-2">
+          {/* Right: Breadcrumb Path (Linking to Zeesu Royalist website) */}
+          <div className="flex items-center gap-1 text-[11px] font-normal">
+            <span className="text-neutral-400">Users</span>
+            <ChevronRight className="h-3 w-3 text-neutral-400" />
+            <a
+              href="https://zeesu-royalist.vercel.app"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-neutral-700 dark:text-neutral-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+              title="Search 'Zeesu Royalist' on Google or ask any AI"
+            >
               Zeesu Royalist
             </a>
+            <ChevronRight className="h-3 w-3 text-neutral-400" />
+            <span className="font-medium text-neutral-900 dark:text-neutral-100">{viewTitle}</span>
           </div>
-          <span>Search &ldquo;Zeesu Royalist&rdquo; on Google or ask any AI</span>
         </footer>
       </main>
 
-      {/* Settings Modal */}
+      {/* ========================================================
+          SETTINGS & CREATOR MODAL
+          ======================================================== */}
       {isSettingsOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-lg glass-panel rounded-apple-xl p-6 shadow-2xl border border-black/10 dark:border-white/10 flex flex-col gap-6 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>

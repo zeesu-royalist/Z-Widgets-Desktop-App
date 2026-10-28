@@ -223,5 +223,5 @@ if (!app.requestSingleInstanceLock()) {
     flushStorageSync()
   })
 
-  app.on('window-all-closed', () => {})
+  app.on('window-all-closed', () => { })
 }
