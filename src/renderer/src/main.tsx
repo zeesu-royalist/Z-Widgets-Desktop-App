@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { App } from './App'
-import { WidgetHost } from './WidgetHost'
+import { WidgetHost } from './widgets/WidgetHost'
 import './index.css'
 
 const isWidgetRoute = window.location.hash.startsWith('#/widget')

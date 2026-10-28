@@ -18,7 +18,7 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "test": "npm run test:m4",
-    "test:m4": "esbuild scripts/verify-milestone4.ts --bundle --platform=node --external:electron --outfile=out/main/verify-m4.js && electron out/main/verify-m4.js",
+    "test:m4": "esbuild scripts/verify-milestone4.ts --bundle --platform=node --external:electron --outfile=out/main/verify-m4.js && env -u ELECTRON_RUN_AS_NODE electron out/main/verify-m4.js",
     "build:unpack": "npm run build && electron-builder --dir"
   },
   "dependencies": {

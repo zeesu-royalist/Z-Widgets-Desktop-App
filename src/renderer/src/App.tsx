@@ -125,18 +125,18 @@ const WIDGET_CATALOG: WidgetMeta[] = [
   },
   {
     id: DEV_TEST_WIDGET_ID,
-    name: 'Host Window (Interactive)',
-    caption: 'project',
+    name: 'Internet Telemetry',
+    caption: 'internet',
     cat: 'Development Host',
-    desc: 'Frameless desktop test window with least-privilege IPC isolation and boundary tests.',
+    desc: 'Celestial dial internet telemetry monitor with live bandwidth metrics and telemetry spectrum.',
     w: 320,
     h: 180,
     x: 760,
     y: 560,
     type: WIDGET_TYPE_TEST,
-    accentColor: '#6366f1',
+    accentColor: '#d482ec',
     cardStyle: 'project',
-    icon: <AppWindow className="h-4 w-4 text-indigo-400" />,
+    icon: <AppWindow className="h-4 w-4 text-fuchsia-400" />,
     isDev: true
   }
 ]
@@ -1035,33 +1035,96 @@ export const App: React.FC = () => {
               }
 
               // -------------------------------------------------------------
-              // 7. Host Window (project style: Frameless test host card)
+              // 7. Host Window (Internet Telemetry style)
               // -------------------------------------------------------------
               return (
                 <div key={widget.id} className="flex flex-col items-center group">
-                  <div className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/10 dark:shadow-black/40 border border-teal-500/20 bg-gradient-to-br from-emerald-900/50 via-teal-950/70 to-slate-900/90 text-white p-4 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
-                    <div className="flex items-center justify-between">
-                      <span className="p-1.5 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-400/30">
-                        <AppWindow className="h-4 w-4" />
-                      </span>
-                      <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded-full bg-white/10 text-teal-200">
-                        Host Window
-                      </span>
+                  <div
+                    className="w-full h-44 rounded-2xl relative overflow-hidden shadow-lg shadow-black/20 text-white p-3.5 flex flex-col justify-between transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl cursor-default"
+                    style={{
+                      background: 'linear-gradient(180deg, #100b42 0%, #1a104c 25%, #351a66 60%, #582684 90%, #602888 100%)'
+                    }}
+                  >
+                    {/* Top Row: 10 MB 23 KB & INTERNET label */}
+                    <div className="flex items-baseline justify-between z-10">
+                      <div className="flex items-baseline tracking-tight font-sans">
+                        <span className="font-bold text-lg text-white leading-none">10</span>
+                        <span className="text-[10px] font-bold text-[#8071ad] uppercase ml-0.5 mr-1.5 leading-none">MB</span>
+                        <span className="font-bold text-lg text-white leading-none">23</span>
+                        <span className="text-[10px] font-bold text-[#8071ad] uppercase ml-0.5 leading-none">KB</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#d482ec] leading-none">
+                          INTERNET
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="my-auto">
-                      <p className="text-xs font-semibold text-white">Interactive Frame</p>
-                      <p className="text-[11px] text-teal-200/70 font-mono">320 × 180 • IPC Isolated</p>
+                    {/* Center: Scaled Mini Celestial Arc Dial */}
+                    <div className="flex-1 flex items-center justify-center -my-1 overflow-visible pointer-events-none">
+                      <svg viewBox="0 0 240 70" className="w-full h-[62px] overflow-visible">
+                        {Array.from({ length: 25 }, (_, i) => {
+                          const t = i / 24
+                          const alpha = (-52 + 104 * t) * (Math.PI / 180)
+                          const sinA = Math.sin(alpha)
+                          const cosA = Math.cos(alpha)
+                          const cx = 120, cy = -12, rOuter = 72, rInner = 58
+                          const isMarker = i === 6
+                          const isAccent = i === 18
+                          const color = isMarker ? '#ffffff' : isAccent ? '#d482ec' : '#9b76c8'
+                          const strokeWidth = isMarker ? 3.5 : 2.5
+                          const opacity = isMarker ? 1 : (i === 0 || i === 24) ? 0.25 : (i === 1 || i === 23) ? 0.45 : 0.88
+
+                          return (
+                            <line
+                              key={i}
+                              x1={cx + rInner * sinA}
+                              y1={cy + rInner * cosA}
+                              x2={cx + rOuter * sinA}
+                              y2={cy + rOuter * cosA}
+                              stroke={color}
+                              strokeWidth={strokeWidth}
+                              strokeLinecap="round"
+                              strokeOpacity={opacity}
+                            />
+                          )
+                        })}
+                        {/* White pointer arrow & indicator */}
+                        <polygon points="94,42 98,37 92,34" fill="#ffffff" />
+                        <circle cx="95" cy="40" r="1.8" fill="#ffffff" />
+                      </svg>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-[10px] text-teal-300/60 font-mono">Dev Test Host</span>
+                    {/* Bottom Row: 12kb, mini spectrum visualizer, and Action Button */}
+                    <div className="flex items-center justify-between z-10 pt-1">
+                      <span className="text-[11px] font-bold text-[#9d6bb1] font-mono leading-none">
+                        12kb
+                      </span>
+
+                      {/* Mini animated spectrum pill */}
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm">
+                        <div className="flex items-end gap-[2px] h-2.5">
+                          {[40, 75, 100, 60, 45].map((h, idx) => (
+                            <span
+                              key={idx}
+                              className="w-[2px] rounded-full"
+                              style={{
+                                height: `${h}%`,
+                                background: idx === 2 ? '#d482ec' : idx % 2 === 0 ? '#a875db' : '#785498'
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[9px] font-mono text-[#cfb0f5] leading-none">21ms</span>
+                      </div>
+
                       <button
                         onClick={() => !isActive ? handleCreateWidget(widget) : handleRemoveWidget(widget.id)}
-                        className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${isActive
-                          ? 'bg-white/20 hover:bg-rose-500 text-white'
-                          : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
-                          }`}
+                        className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-white/20 hover:bg-rose-500 text-white border border-white/20'
+                            : 'bg-white text-neutral-900 hover:bg-white/90 shadow-sm'
+                        }`}
                       >
                         {isActive ? 'Active' : '+ Add'}
                       </button>

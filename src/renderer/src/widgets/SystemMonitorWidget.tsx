@@ -336,10 +336,10 @@ export const SystemMonitorWidget: React.FC<SystemMonitorWidgetProps> = ({ widget
                   <span className="text-[12px] font-semibold text-white/80 ml-0.5">%</span>
                 </div>
                 <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400/90 mt-1">
-                  {showFreeMetrics ? 'FREE RAM' : 'MEMORY (RAM)'}
+                  {showFreeMetrics ? 'FREE RAM' : 'MEMORY RAM'}
                 </span>
                 <span className="text-[10px] font-bold text-white/90 font-mono mt-0.5">
-                  {showFreeMetrics ? `${freeGBStr} GB FREE` : (stats ? `${stats.usedMemGB} GB` : '...')}
+                  {showFreeMetrics ? `${freeGBStr}GB FREE` : (stats ? `${stats.usedMemGB} GB` : '...')}
                 </span>
               </div>
             </div>
