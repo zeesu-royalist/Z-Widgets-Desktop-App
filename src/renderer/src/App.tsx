@@ -234,7 +234,6 @@ const WidgetPreviewCard = memo<PreviewCardProps>(({
                 <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-b from-[#0d0d2b] to-[#080820]" />
                 <div className="absolute bottom-0 left-0 right-0 h-[45%] pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 20%, rgba(251,191,36,0.12) 0%, transparent 60%)' }} />
                 <div className="absolute top-2 left-2 text-[10px] font-mono text-cyan-300/80 tracking-widest uppercase flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                   <span>Ambient Slideshow</span>
                 </div>
                 <div className="absolute bottom-2 left-2.5 text-[9px] font-mono text-white/50 tracking-wider">
@@ -400,7 +399,7 @@ const WidgetPreviewCard = memo<PreviewCardProps>(({
             </div>
             <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[10px] text-neutral-400">
               <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Auto-save active
+                <span className="h-1.5 rounded-full" />Auto-save active
               </span>
               <span className="font-mono">3 Notes</span>
             </div>
@@ -1161,7 +1160,7 @@ export const App: React.FC = () => {
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-7 py-1.5 text-xs rounded-md bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-1 focus:ring-blue-500 text-neutral-900 dark:text-white placeholder-neutral-400 w-52 sm:w-60 transition-all"
+                className="h-7 pl-8 pr-7 text-xs rounded-md bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-1 focus:ring-blue-500 text-neutral-900 dark:text-white placeholder-neutral-400 w-52 sm:w-60 transition-all leading-none"
               />
               {searchQuery && (
                 <button
@@ -1180,7 +1179,7 @@ export const App: React.FC = () => {
             {/* Quick Add Button */}
             <button
               onClick={() => !isClockActive ? handleCreateWidget(WIDGET_CATALOG[1]) : handleCreateWidget(filteredWidgets[0] || WIDGET_CATALOG[0])}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-medium shadow-xs transition-all cursor-pointer"
+              className="h-7 inline-flex items-center gap-1.5 px-3 rounded-md bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-medium shadow-xs transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>{!isClockActive ? 'Add Digital Clock' : 'Add Widget'}</span>
@@ -1261,137 +1260,268 @@ export const App: React.FC = () => {
       </main>
 
       {/* ========================================================
-          SETTINGS & CREATOR MODAL
+          SETTINGS & CREATOR MODAL (Native Apple macOS System Settings UI)
           ======================================================== */}
       {isSettingsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-lg glass-panel rounded-apple-xl p-6 shadow-2xl border border-black/10 dark:border-white/10 flex flex-col gap-6 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
-              <div>
-                <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">Settings</h2>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">Customize startup, appearance, and display management</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-lg bg-[#f6f6f8] dark:bg-[#1e1e22] rounded-2xl shadow-2xl border border-black/15 dark:border-white/10 flex flex-col max-h-[88vh] overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* macOS Window Titlebar with Traffic Lights */}
+            <div className="h-12 px-4 flex items-center justify-between border-b border-black/[0.07] dark:border-white/[0.08] select-none bg-black/[0.02] dark:bg-white/[0.02] shrink-0">
+              <div className="flex items-center gap-2 w-20">
+                <button
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] hover:brightness-90 transition-all cursor-pointer flex items-center justify-center group"
+                  title="Close"
+                >
+                  <X className="w-2 h-2 text-[#4a0002] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+                <button
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] hover:brightness-90 transition-all cursor-pointer"
+                  title="Minimize"
+                />
+                <button
+                  className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] opacity-40 cursor-default"
+                  title="Zoom"
+                />
               </div>
-              <button onClick={() => setIsSettingsOpen(false)} aria-label="Close settings" className="p-1.5 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
 
-            <div className="space-y-3">
-              <h3 className="text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">General</h3>
-              <div className="flex items-center justify-between p-3.5 rounded-apple-md bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-apple-sm bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 mt-0.5"><Power className="h-4 w-4" /></div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Launch at Login</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-xs mt-0.5 leading-relaxed">Automatically start Z-Widgets in background on login.</p>
-                    {!startupSettings?.isPackaged && <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">Dev mode: Saved locally without registry modifications</span>}
-                  </div>
-                </div>
-                <button onClick={handleToggleStartup} disabled={isUpdatingStartup || !startupSettings?.isSupported} className={`px-3 py-1.5 rounded-apple-sm text-xs font-semibold transition-all cursor-pointer ${startupSettings?.openAtLogin ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm' : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200'}`}>
-                  {isUpdatingStartup ? 'Saving...' : startupSettings?.openAtLogin ? 'Enabled' : 'Disabled'}
+              <span className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100 tracking-tight">
+                System Settings
+              </span>
+
+              <div className="w-20 flex justify-end">
+                <button
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="h-6 px-3 rounded-[6px] bg-[#007aff] hover:bg-[#006ee6] active:scale-95 text-white text-xs font-medium shadow-xs transition-all cursor-pointer"
+                >
+                  Done
                 </button>
               </div>
-
-              <div className="flex items-center justify-between p-3.5 rounded-apple-md bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-apple-sm bg-amber-500/10 text-amber-600 dark:text-amber-400">{isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}</div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Appearance</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{isDarkMode ? 'Dark theme active' : 'Light theme active'}</p>
-                  </div>
-                </div>
-                <button onClick={() => setIsDarkMode((prev) => !prev)} className="px-3 py-1.5 rounded-apple-sm bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-xs font-semibold text-neutral-800 dark:text-neutral-200 transition-colors cursor-pointer">
-                  {isDarkMode ? 'Switch to Light' : 'Switch to Dark'}
-                </button>
-              </div>
             </div>
 
-            <div className="space-y-3 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
-              <h3 className="text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Display & Monitors</h3>
-              <div className="p-3.5 rounded-apple-md bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06] space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-apple-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 mt-0.5"><RotateCcw className="h-4 w-4" /></div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Multi-Monitor Position Recovery</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5 leading-relaxed">Rescue orphaned off-screen widgets back onto your primary monitor.</p>
+            {/* Modal Body: macOS System Settings Panes */}
+            <div className="p-5 overflow-y-auto space-y-4 text-[13px]">
+              {/* Apple Account / Creator Profile Header */}
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-[#252529] border border-black/[0.06] dark:border-white/[0.08] shadow-xs flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-11 w-11 rounded-full bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/20 shrink-0">
+                    ZR
                   </div>
-                </div>
-                <div className="flex items-center justify-between pt-1">
-                  {recoveryFeedback ? <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" />{recoveryFeedback}</span> : <span className="text-[11px] text-neutral-400">Automated watcher: 300ms active</span>}
-                  <button onClick={handleRecoverDisplays} disabled={isRecovering} className="px-3 py-1.5 rounded-apple-sm bg-neutral-200 dark:bg-neutral-800 text-xs font-semibold text-neutral-800 dark:text-neutral-200 transition-colors cursor-pointer flex items-center gap-1.5">
-                    <RotateCcw className={`h-3 w-3 ${isRecovering ? 'animate-spin' : ''}`} />
-                    <span>{isRecovering ? 'Checking...' : 'Recover Widgets'}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Creator & Author Section */}
-            <div className="space-y-3 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
-              <h3 className="text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Creator & Author</h3>
-              <div className="p-3.5 rounded-apple-md bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-transparent border border-emerald-500/20 space-y-2.5">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-xs shadow-sm shadow-emerald-500/20">
-                      ZR
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 truncate">
+                        Zeesu Royalist
+                      </h3>
+                      <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                        Verified
+                      </span>
                     </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">Zeesu Royalist</h4>
-                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Founder & Creator of Z-Widgets</p>
-                    </div>
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
+                      Founder & Creator of Z-Widgets
+                    </p>
+                    <p className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono mt-0.5 truncate">
+                      zeesu-royalist.vercel.app
+                    </p>
                   </div>
-                  <a
-                    href="https://zeesu-royalist.vercel.app"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="px-2.5 py-1 rounded-apple-sm bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold transition-colors cursor-pointer shadow-sm"
-                  >
-                    Visit Website
-                  </a>
                 </div>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                  Search <span className="font-semibold text-neutral-900 dark:text-neutral-100">&ldquo;Zeesu Royalist&rdquo;</span> on Google or ask any AI to know who I am and discover my journey and portfolio.
-                </p>
-                <div className="pt-1 flex items-center justify-between text-[11px] text-neutral-400 border-t border-black/[0.04] dark:border-white/[0.04]">
-                  <span>Portfolio: <span className="font-mono text-neutral-600 dark:text-neutral-300">zeesu-royalist.vercel.app</span></span>
-                  <span className="text-[10px] uppercase tracking-wider font-mono text-emerald-600 dark:text-emerald-400 font-semibold">Verified Creator</span>
-                </div>
-              </div>
-            </div>
 
-            <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
-              <button onClick={() => setShowDiag(!showDiag)} className="w-full flex items-center justify-between text-xs text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 py-1 transition-colors cursor-pointer">
-                <span>Diagnostics & Runtime Information</span>
-                {showDiag ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-              </button>
-              {showDiag && (
-                <div className="mt-3 p-3.5 rounded-apple-md bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] space-y-3">
-                  <div className="grid grid-cols-2 gap-2 text-xs text-neutral-500">
-                    {([
-                      [Monitor, `Platform: ${appInfo?.platform || 'darwin'}`],
-                      [Cpu, `Electron: v${appInfo?.electronVersion || '...'}`],
-                      [Terminal, `Chromium: v${appInfo?.chromeVersion || '...'}`],
-                      [Zap, `Node: v${appInfo?.nodeVersion || '...'}`]
-                    ] as [React.ElementType, string][]).map(([IconComp, text], i) => (
-                      <div key={i} className="flex items-center gap-1.5">
-                        <IconComp className="h-3.5 w-3.5" />
-                        <span>{text}</span>
+                <a
+                  href="https://zeesu-royalist.vercel.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="h-7 px-3 inline-flex items-center gap-1 text-xs font-medium rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-neutral-800 dark:text-neutral-200 active:scale-95 transition-all cursor-pointer shrink-0 ml-2"
+                  title="Search 'Zeesu Royalist' on Google or ask any AI"
+                >
+                  <span>Profile</span>
+                  <ChevronRight className="h-3 w-3 text-neutral-400" />
+                </a>
+              </div>
+
+              {/* General Settings Group */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 px-1 uppercase tracking-wider">
+                  General
+                </span>
+                <div className="rounded-xl bg-white dark:bg-[#252529] border border-black/[0.06] dark:border-white/[0.08] shadow-xs divide-y divide-black/[0.05] dark:divide-white/[0.06] overflow-hidden">
+                  {/* Row 1: Launch at Login with Apple Toggle Switch */}
+                  <div className="flex items-center justify-between px-3.5 py-2.5">
+                    <div className="flex items-center gap-3 min-w-0 pr-2">
+                      <div className="w-7 h-7 rounded-[7px] bg-gradient-to-b from-indigo-500 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <Power className="h-4 w-4" />
                       </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
-                    <span className="text-[11px] text-neutral-400 font-mono">{ipcStatus}</span>
-                    <div className="flex items-center gap-2">
-                      <button onClick={handlePing} disabled={isPinging} className="px-2.5 py-1 rounded bg-black/5 dark:bg-white/5 text-[11px] font-medium text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer">{isPinging ? 'Pinging...' : 'Test IPC Ping'}</button>
-                      <button onClick={() => window.api?.hideWindow?.()} className="px-2.5 py-1 rounded bg-black/5 dark:bg-white/5 text-[11px] font-medium text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer flex items-center gap-1"><Minimize2 className="h-3 w-3" /><span>Hide to Tray</span></button>
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-medium text-neutral-900 dark:text-neutral-100">
+                          Launch at Login
+                        </p>
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-tight">
+                          Start Z-Widgets in background automatically on login
+                        </p>
+                        {!startupSettings?.isPackaged && (
+                          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
+                            Dev mode: Saved locally without registry modifications
+                          </span>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Apple macOS Green/Gray Toggle Switch */}
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={Boolean(startupSettings?.openAtLogin)}
+                      disabled={isUpdatingStartup || !startupSettings?.isSupported}
+                      onClick={handleToggleStartup}
+                      className={`w-[38px] h-[22px] rounded-full p-[2px] transition-colors duration-200 ease-in-out cursor-pointer relative shrink-0 focus:outline-none disabled:opacity-50 ${
+                        startupSettings?.openAtLogin ? 'bg-[#34c759]' : 'bg-black/15 dark:bg-white/20'
+                      }`}
+                      title={startupSettings?.openAtLogin ? 'Disable Launch at Login' : 'Enable Launch at Login'}
+                    >
+                      <span
+                        className={`block w-[18px] h-[18px] rounded-full bg-white shadow-sm transform transition-transform duration-200 ease-in-out ${
+                          startupSettings?.openAtLogin ? 'translate-x-[16px]' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Row 2: Dark Mode with Apple Round Toggle Switch */}
+                  <div className="flex items-center justify-between px-3.5 py-2.5">
+                    <div className="flex items-center gap-3 min-w-0 pr-2">
+                      <div className={`w-7 h-7 rounded-[7px] text-white flex items-center justify-center shrink-0 shadow-xs transition-colors ${
+                        isDarkMode
+                          ? 'bg-gradient-to-b from-blue-600 to-indigo-600'
+                          : 'bg-gradient-to-b from-amber-400 to-amber-500'
+                      }`}>
+                        {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-medium text-neutral-900 dark:text-neutral-100">
+                          Dark Mode
+                        </p>
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-tight">
+                          {isDarkMode ? 'Dark appearance active for window and desktop' : 'Light appearance active for window and desktop'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Apple macOS Round On/Off Toggle Switch */}
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={isDarkMode}
+                      onClick={() => setIsDarkMode((prev) => !prev)}
+                      className={`w-[38px] h-[22px] rounded-full p-[2px] transition-colors duration-200 ease-in-out cursor-pointer relative shrink-0 focus:outline-none ${
+                        isDarkMode ? 'bg-[#34c759]' : 'bg-black/15 dark:bg-white/20'
+                      }`}
+                      title={isDarkMode ? 'Disable Dark Mode (Switch to Light)' : 'Enable Dark Mode'}
+                    >
+                      <span
+                        className={`block w-[18px] h-[18px] rounded-full bg-white shadow-sm transform transition-transform duration-200 ease-in-out ${
+                          isDarkMode ? 'translate-x-[16px]' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
 
-            <div className="flex justify-end pt-2">
-              <button onClick={() => setIsSettingsOpen(false)} className="px-4 py-2 rounded-apple-sm bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 text-xs font-semibold transition-colors cursor-pointer">Done</button>
+              {/* Display & Topology Group */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 px-1 uppercase tracking-wider">
+                  Display & Monitors
+                </span>
+                <div className="rounded-xl bg-white dark:bg-[#252529] border border-black/[0.06] dark:border-white/[0.08] shadow-xs divide-y divide-black/[0.05] dark:divide-white/[0.06] overflow-hidden">
+                  <div className="flex items-center justify-between px-3.5 py-2.5">
+                    <div className="flex items-center gap-3 min-w-0 pr-2">
+                      <div className="w-7 h-7 rounded-[7px] bg-gradient-to-b from-blue-500 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <RotateCcw className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-medium text-neutral-900 dark:text-neutral-100">
+                          Multi-Monitor Position Recovery
+                        </p>
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-tight">
+                          Rescue orphaned off-screen widgets back to primary display
+                        </p>
+                        {recoveryFeedback && (
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1 mt-0.5">
+                            <CheckCircle2 className="h-3 w-3" />
+                            {recoveryFeedback}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleRecoverDisplays}
+                      disabled={isRecovering}
+                      className="h-7 px-3 inline-flex items-center gap-1.5 text-xs font-medium rounded-md bg-white dark:bg-[#323236] border border-black/15 dark:border-white/15 text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 shadow-xs transition-all cursor-pointer shrink-0 disabled:opacity-50"
+                    >
+                      <RotateCcw className={`h-3 w-3 ${isRecovering ? 'animate-spin' : ''}`} />
+                      <span>{isRecovering ? 'Scanning...' : 'Recover'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* System Diagnostics & Information Disclosure */}
+              <div className="space-y-1.5">
+                <button
+                  type="button"
+                  onClick={() => setShowDiag((prev) => !prev)}
+                  className="w-full flex items-center justify-between px-1 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors uppercase tracking-wider cursor-pointer"
+                >
+                  <span>System Diagnostics & IPC</span>
+                  {showDiag ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                </button>
+                {showDiag && (
+                  <div className="rounded-xl bg-white dark:bg-[#252529] border border-black/[0.06] dark:border-white/[0.08] shadow-xs p-3 space-y-2.5">
+                    <div className="grid grid-cols-2 gap-2 text-xs text-neutral-600 dark:text-neutral-300 font-mono">
+                      <div className="flex items-center gap-1.5 bg-black/[0.03] dark:bg-white/[0.04] p-1.5 rounded-md border border-black/[0.04] dark:border-white/[0.04]">
+                        <Monitor className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">Platform: {appInfo?.platform || 'darwin'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-black/[0.03] dark:bg-white/[0.04] p-1.5 rounded-md border border-black/[0.04] dark:border-white/[0.04]">
+                        <Cpu className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">Electron: {appInfo?.electronVersion || 'v...'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-black/[0.03] dark:bg-white/[0.04] p-1.5 rounded-md border border-black/[0.04] dark:border-white/[0.04]">
+                        <Terminal className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">Chromium: {appInfo?.chromeVersion || 'v...'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-black/[0.03] dark:bg-white/[0.04] p-1.5 rounded-md border border-black/[0.04] dark:border-white/[0.04]">
+                        <Zap className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">Node: {appInfo?.nodeVersion || 'v...'}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-black/[0.05] dark:border-white/[0.06]">
+                      <span className="text-[11px] text-neutral-400 font-mono truncate max-w-[200px]" title={ipcStatus}>
+                        {ipcStatus}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={handlePing}
+                          disabled={isPinging}
+                          className="h-6 px-2.5 inline-flex items-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[11px] font-medium text-neutral-700 dark:text-neutral-200 transition-colors cursor-pointer disabled:opacity-50"
+                        >
+                          {isPinging ? 'Pinging...' : 'Test IPC'}
+                        </button>
+                        <button
+                          onClick={() => window.api?.hideWindow?.()}
+                          className="h-6 px-2.5 inline-flex items-center gap-1 rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[11px] font-medium text-neutral-700 dark:text-neutral-200 transition-colors cursor-pointer"
+                        >
+                          <Minimize2 className="h-3 w-3" />
+                          <span>Hide to Tray</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
