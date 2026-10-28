@@ -15,6 +15,7 @@ export const SYSTEM_MONITOR_WIDGET_ID = 'system-monitor'
 export const WEATHER_WIDGET_ID = 'weather-widget'
 export const PHOTO_WIDGET_ID = 'photo-frame'
 export const DEPTH_DIVE_WIDGET_ID = 'depth-dive-widget'
+export const DUO_CALENDAR_WIDGET_ID = 'duo-calendar-widget'
 
 export const WIDGET_TYPE_CLOCK = 'clock'
 export const WIDGET_TYPE_NOTES = 'notes'
@@ -24,6 +25,7 @@ export const WIDGET_TYPE_WEATHER = 'weather'
 export const WIDGET_TYPE_PHOTO = 'photo'
 export const WIDGET_TYPE_TEST = 'test'
 export const WIDGET_TYPE_DEPTH = 'depth'
+export const WIDGET_TYPE_DUO = 'duo'
 export const WIDGET_TYPE_STANDARD = 'standard'
 
 export const WIDGET_STORAGE_SCHEMA_VERSION = 1

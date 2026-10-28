@@ -7,10 +7,12 @@ import { WeatherWidget } from './WeatherWidget'
 import { PhotoWidget } from './PhotoWidget'
 import { InternetTelemetryWidget } from './InternetTelemetryWidget'
 import { DepthDiveWidget } from './DepthDiveWidget'
+import { DuoCalendarWidget } from './DuoCalendarWidget'
 import {
   DEV_TEST_WIDGET_ID, WIDGET_TYPE_CLOCK, WIDGET_TYPE_NOTES,
   WIDGET_TYPE_TODO, WIDGET_TYPE_SYSTEM, WIDGET_TYPE_WEATHER,
-  WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST, WIDGET_TYPE_DEPTH
+  WIDGET_TYPE_PHOTO, WIDGET_TYPE_TEST, WIDGET_TYPE_DEPTH,
+  WIDGET_TYPE_DUO
 } from '../../../shared/constants'
 
 const WIDGET_COMPONENTS: Record<string, React.ComponentType<{ widgetId: string; onClose?: () => Promise<void> }>> = {
@@ -21,7 +23,8 @@ const WIDGET_COMPONENTS: Record<string, React.ComponentType<{ widgetId: string; 
   [WIDGET_TYPE_WEATHER]: WeatherWidget,
   [WIDGET_TYPE_PHOTO]: PhotoWidget,
   [WIDGET_TYPE_TEST]: InternetTelemetryWidget,
-  [WIDGET_TYPE_DEPTH]: DepthDiveWidget
+  [WIDGET_TYPE_DEPTH]: DepthDiveWidget,
+  [WIDGET_TYPE_DUO]: DuoCalendarWidget
 }
 
 const TYPE_PREFIXES: [string, string][] = [
@@ -29,7 +32,8 @@ const TYPE_PREFIXES: [string, string][] = [
   ['todo', WIDGET_TYPE_TODO], ['system', WIDGET_TYPE_SYSTEM],
   ['weather', WIDGET_TYPE_WEATHER], ['photo', WIDGET_TYPE_PHOTO],
   ['internet', WIDGET_TYPE_TEST], ['test', WIDGET_TYPE_TEST],
-  ['depth', WIDGET_TYPE_DEPTH], ['dive', WIDGET_TYPE_DEPTH]
+  ['depth', WIDGET_TYPE_DEPTH], ['dive', WIDGET_TYPE_DEPTH],
+  ['duo', WIDGET_TYPE_DUO], ['calendar', WIDGET_TYPE_DUO]
 ]
 
 interface ParsedWidgetRoute { id: string; type: string }
