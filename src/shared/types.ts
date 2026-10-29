@@ -5,6 +5,7 @@ export type WidgetPlacementMode = 'desktop' | 'floating' | 'always-on-top'
 export interface AppInfo {
   name: string; version: string; platform: Platform
   electronVersion: string; chromeVersion: string; nodeVersion: string
+  username?: string; hostname?: string
 }
 
 export interface WidgetWindowConfig {

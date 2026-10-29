@@ -5,7 +5,7 @@ import {
   ChevronRight, Image as ImageIcon, Sun, Moon, LayoutGrid, X, RotateCcw,
   Monitor, Terminal, Zap, ChevronDown, ChevronUp, Minimize2, ArrowLeft,
   Share2, Tag, Search, Check, Folder, Calendar as CalendarIcon, ExternalLink,
-  ArrowDown, Download, Pause, Minus, Square
+  ArrowDown, Download, Pause, Minus, Square, Pencil
 } from 'lucide-react'
 import { AppInfo, StartupSettings, PersistedWidgetConfig } from '../../shared/types'
 import {
@@ -773,6 +773,34 @@ export const App: React.FC = () => {
   const [copiedShare, setCopiedShare] = useState<boolean>(false)
   const [currentTime, setCurrentTime] = useState<Date>(new Date())
 
+  // User Profile Name (Defaults to OS system username, customizable by user via localStorage)
+  const [userName, setUserName] = useState<string>(() => localStorage.getItem('zw_custom_username') || '')
+  const [isEditingUser, setIsEditingUser] = useState<boolean>(false)
+  const [tempUserName, setTempUserName] = useState<string>('')
+
+  useEffect(() => {
+    if (!localStorage.getItem('zw_custom_username') && appInfo?.username) {
+      setUserName(appInfo.username)
+    }
+  }, [appInfo?.username])
+
+  const effectiveUserName = userName || appInfo?.username || 'User'
+
+  const userInitials = useMemo(() => {
+    const parts = effectiveUserName.trim().split(/\s+/)
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      return (parts[0][0] + parts[1][0]).toUpperCase()
+    }
+    return effectiveUserName.slice(0, 2).toUpperCase() || 'U'
+  }, [effectiveUserName])
+
+  const handleSaveUserName = (nameToSave: string): void => {
+    const finalName = nameToSave.trim() || appInfo?.username || 'User'
+    setUserName(finalName)
+    localStorage.setItem('zw_custom_username', finalName)
+    setIsEditingUser(false)
+  }
+
   const isAllHidden = activeWidgets.length > 0 && activeWidgets.every((id) => hiddenWidgetIds.has(id))
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -1180,31 +1208,62 @@ export const App: React.FC = () => {
           })}
         </nav>
 
-        {/* Sidebar Footer: Creator Branding + Theme & Settings */}
+        {/* Sidebar Footer: User Profile + Theme & Settings */}
         <div className="p-3 border-t border-black/[0.06] dark:border-white/[0.06] space-y-2">
-          {/* Creator Profile Card (Zeesu Royalist) */}
-          <a
-            href="https://zeesu-royalist.vercel.app"
-            target="_blank"
-            rel="noreferrer"
-            title="Search 'Zeesu Royalist' on Google or ask any AI"
-            className="group flex items-center justify-between p-2 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] border border-black/[0.04] dark:border-white/[0.06] transition-all cursor-pointer"
-          >
-            <div className="flex items-center gap-2 truncate">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-[10px] shrink-0 shadow-xs">
-                ZR
+          {/* User Profile Card (System / Custom User Name) */}
+          <div className="group flex items-center justify-between p-2 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] border border-black/[0.04] dark:border-white/[0.06] transition-all">
+            <div className="flex items-center gap-2 truncate flex-1 min-w-0">
+              <div className="h-6 w-6 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-[10px] shrink-0 shadow-xs">
+                {userInitials}
               </div>
-              <div className="truncate">
-                <p className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors truncate">
-                  Zeesu Royalist
-                </p>
-                <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">
-                  Creator & Founder
-                </p>
+              <div className="truncate flex-1 min-w-0">
+                {isEditingUser ? (
+                  <input
+                    type="text"
+                    value={tempUserName}
+                    onChange={(e) => setTempUserName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveUserName(tempUserName)
+                      if (e.key === 'Escape') setIsEditingUser(false)
+                    }}
+                    onBlur={() => handleSaveUserName(tempUserName)}
+                    autoFocus
+                    placeholder="Enter your name"
+                    className="w-full text-xs font-semibold text-neutral-900 dark:text-white bg-black/5 dark:bg-white/10 px-1.5 py-0.5 rounded outline-none border border-blue-500/50"
+                  />
+                ) : (
+                  <div
+                    onClick={() => {
+                      setTempUserName(effectiveUserName)
+                      setIsEditingUser(true)
+                    }}
+                    className="cursor-pointer"
+                    title="Click to edit name"
+                  >
+                    <p className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors truncate">
+                      {effectiveUserName}
+                    </p>
+                    <p className="text-[10px] text-neutral-400 dark:text-neutral-500 truncate">
+                      {appInfo?.hostname ? `${appInfo.hostname} • Local` : 'Personal Workspace'}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-            <ExternalLink className="h-3 w-3 text-neutral-400 group-hover:text-emerald-500 shrink-0 ml-1 transition-colors" />
-          </a>
+
+            {!isEditingUser && (
+              <button
+                onClick={() => {
+                  setTempUserName(effectiveUserName)
+                  setIsEditingUser(true)
+                }}
+                className="p-1 rounded text-neutral-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer shrink-0 ml-1"
+                title="Edit name"
+              >
+                <Pencil className="h-3 w-3" />
+              </button>
+            )}
+          </div>
 
           {/* Settings Trigger & Theme Switcher */}
           <div className="flex items-center justify-between pt-1">
@@ -1338,15 +1397,16 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-1 text-[11px] font-normal">
             <span className="text-neutral-400">Users</span>
             <ChevronRight className="h-3 w-3 text-neutral-400" />
-            <a
-              href="https://zeesu-royalist.vercel.app"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-neutral-700 dark:text-neutral-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors cursor-pointer"
-              title="Search 'Zeesu Royalist' on Google or ask any AI"
+            <span
+              onClick={() => {
+                setTempUserName(effectiveUserName)
+                setIsEditingUser(true)
+              }}
+              className="font-medium text-neutral-700 dark:text-neutral-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer"
+              title="Click to change your name"
             >
-              Zeesu Royalist
-            </a>
+              {effectiveUserName}
+            </span>
             <ChevronRight className="h-3 w-3 text-neutral-400" />
             <span className="font-medium text-neutral-900 dark:text-neutral-100">{viewTitle}</span>
           </div>

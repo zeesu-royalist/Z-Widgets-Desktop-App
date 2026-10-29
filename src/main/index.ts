@@ -1,6 +1,7 @@
 import { app, ipcMain, IpcMainInvokeEvent, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
 import { existsSync } from 'fs'
+import { userInfo, hostname } from 'os'
 import { is, electronApp, optimizer } from '@electron-toolkit/utils'
 import {
   APP_NAME, APP_VERSION, IPC_CHANNELS, DEV_TEST_WIDGET_ID,
@@ -132,10 +133,19 @@ const isValidId = (id: unknown): id is string => typeof id === 'string' && /^[a-
 
 function registerIpcHandlers(): void {
   ipcMain.handle(IPC_CHANNELS.PING, async () => 'pong')
-  ipcMain.handle(IPC_CHANNELS.GET_APP_INFO, async (): Promise<AppInfo> => ({
-    name: APP_NAME, version: APP_VERSION, platform: process.platform as Platform,
-    electronVersion: process.versions.electron, chromeVersion: process.versions.chrome, nodeVersion: process.versions.node
-  }))
+  ipcMain.handle(IPC_CHANNELS.GET_APP_INFO, async (): Promise<AppInfo> => {
+    let username = 'User'
+    try {
+      username = userInfo().username || hostname() || 'User'
+    } catch {
+      username = hostname() || 'User'
+    }
+    return {
+      name: APP_NAME, version: APP_VERSION, platform: process.platform as Platform,
+      electronVersion: process.versions.electron, chromeVersion: process.versions.chrome, nodeVersion: process.versions.node,
+      username, hostname: hostname()
+    }
+  })
 
   ipcMain.handle(IPC_CHANNELS.HIDE_MAIN_WINDOW, async (e) => isMain(e) ? (hideMainWindow(), true) : false)
   ipcMain.handle(IPC_CHANNELS.SHOW_MAIN_WINDOW, async (e) => isMain(e) ? (showMainWindow(), true) : false)
