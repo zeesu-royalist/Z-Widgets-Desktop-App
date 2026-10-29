@@ -22,6 +22,8 @@
     "test:m4": "esbuild scripts/verify-milestone4.ts --bundle --platform=node --external:electron --outfile=out/main/verify-m4.js && env -u ELECTRON_RUN_AS_NODE electron out/main/verify-m4.js",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:mac": "npm run build && electron-builder --mac",
+    "build:mac:intel": "npm run build && electron-builder --mac --x64",
+    "build:mac:arm": "npm run build && electron-builder --mac --arm64",
     "build:win": "npm run build && electron-builder --win --x64",
     "build:linux": "npm run build && electron-builder --linux --x64",
     "build:all": "npm run build && electron-builder -mwl"

@@ -37,7 +37,8 @@ Click your operating system to download the ready-to-use app:
 
 | Platform | Direct 1-Click Download Link | File Size | Setup / Installation |
 | :--- | :--- | :---: | :--- |
-| 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
+| 🍏 **macOS (Apple Silicon M1/M2/M3/M4)** | [**Download Mac Apple Silicon (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | Naye Macs (M1/M2/M3/M4) ke liye |
+| 🍏 **macOS (Intel Core i3/i5/i7/i9)** | [**Download Mac Intel (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | Intel Macs (2019 ya purane) ke liye |
 | 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Windows.exe) | `77 MB` | Double click `.exe` to install |
 | 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.deb) | `70 MB` | Double click `.deb` to install directly |
 
@@ -142,10 +143,12 @@ Code se bina code wala installer app generate karne ke liye ye commands run kare
 
 Agar aapne direct file download ki hai:
 
-- **🍏 Mac Users**:
-  1. `Z-Widgets-for-Mac.dmg` open karein.
-  2. `Z-Widgets` ko `Applications` folder me drag karein.
-  3. Pehli baar open karne ke liye: **Right-Click > Open** karein.
+- **🍏 Mac Users (Apple Silicon vs Intel)**:
+  1. **Apna Mac check karein**: Screen ke top-left corner me **Apple Menu () > About This Mac** par click karein.
+     - Agar **Chip: Apple M1/M2/M3/M4** likha hai 👉 [**Apple Silicon DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg) download karein.
+     - Agar **Processor: Intel Core i3/i5/i7/i9** likha hai 👉 [**Intel DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg) download karein.
+  2. Downloaded `.dmg` file open karein aur `Z-Widgets` ko `Applications` folder me drag karein.
+  3. Pehli baar open karne ke liye: App par **Right-Click (Control + Click) > Open** karein.
 
 - **🪟 Windows Users**:
   1. `Z-Widgets-for-Windows.exe` par double-click karein.
