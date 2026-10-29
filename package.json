@@ -49,6 +49,10 @@
   "build": {
     "appId": "com.zwidgets.app",
     "productName": "Z-Widgets",
+    "electronLanguages": [
+      "en"
+    ],
+    "compression": "maximum",
     "directories": {
       "buildResources": "resources"
     },
