@@ -37,11 +37,11 @@ Click your operating system to download the ready-to-use app:
 
 | Platform | Direct 1-Click Download Link | File Size | Setup |
 | :--- | :--- | :---: | :--- |
-| 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/downloads/Z-Widgets-0.1.0-arm64.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
-| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/downloads/Z-Widgets-Setup-0.1.0.exe) | `77 MB` | Double click `.exe` to install |
-| 🐧 **Linux** | [**Download for Linux (.AppImage)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/downloads/Z-Widgets-0.1.0.AppImage) | `79 MB` | One-click executable file |
+| 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
+| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Windows.exe) | `77 MB` | Double click `.exe` to install |
+| 🐧 **Linux** | [**Download for Linux (.AppImage)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.AppImage) | `79 MB` | One-click executable file |
 
-📁 **All Installers Folder**: [**Open downloads/ folder**](downloads/)
+📁 **All Installers Folder**: [**Open Z-Widgets-Installers/ folder**](Z-Widgets-Installers/)
 
 > [!NOTE]
 > **Mac Security Tip**: If Mac shows a security warning on first open, just **Right-Click (Control + Click) > Open**, or run `xattr -cr /Applications/Z-Widgets.app` in Terminal.

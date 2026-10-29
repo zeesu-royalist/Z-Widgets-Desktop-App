@@ -40,17 +40,27 @@ export function createMainWindow(): BrowserWindow {
   }
 
   const iconPath = join(__dirname, '../../resources/icon.png')
+  const safeIcon = existsSync(iconPath) ? iconPath : undefined
   const win = new BrowserWindow({
     width: DEFAULT_WINDOW_WIDTH, height: DEFAULT_WINDOW_HEIGHT,
     minWidth: MIN_WINDOW_WIDTH, minHeight: MIN_WINDOW_HEIGHT,
     title: APP_NAME, show: false, autoHideMenuBar: true, backgroundColor: '#0a0a0c',
-    icon: iconPath,
+    icon: safeIcon,
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 16, y: 16 }, vibrancy: 'under-window' } : {}),
     webPreferences: { preload: join(__dirname, '../preload/index.js'), sandbox: false, contextIsolation: true, nodeIntegration: false }
   })
 
   mainWindow = win
-  win.on('ready-to-show', () => { win.show(); win.focus() })
+  win.once('ready-to-show', () => { win.show(); win.focus() })
+  win.webContents.on('did-finish-load', () => {
+    if (!win.isVisible()) { win.show(); win.focus() }
+  })
+  setTimeout(() => {
+    if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) {
+      mainWindow.show()
+      mainWindow.focus()
+    }
+  }, 1000)
   win.on('close', (e) => { if (!isQuitting) { e.preventDefault(); win.hide() } })
   win.on('closed', () => { mainWindow = null })
   win.webContents.setWindowOpenHandler((d) => { shell.openExternal(d.url); return { action: 'deny' } })
@@ -170,6 +180,10 @@ function registerIpcHandlers(): void {
 }
 
 app.name = APP_NAME
+
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('no-sandbox')
+}
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()

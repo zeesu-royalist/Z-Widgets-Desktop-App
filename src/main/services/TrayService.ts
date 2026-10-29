@@ -37,25 +37,30 @@ function getTrayIcon(): NativeImage {
   return img
 }
 
-export function initTray(callbacks: TrayCallbacks): Tray {
-  if (trayInstance) { trayInstance.destroy(); trayInstance = null }
+export function initTray(callbacks: TrayCallbacks): Tray | null {
+  try {
+    if (trayInstance) { trayInstance.destroy(); trayInstance = null }
 
-  const tray = new Tray(getTrayIcon())
-  tray.setToolTip('Z-Widgets')
+    const tray = new Tray(getTrayIcon())
+    tray.setToolTip('Z-Widgets')
 
-  const menu: MenuItemConstructorOptions[] = [
-    { label: 'Open Z-Widgets', click: () => callbacks.onOpen() },
-    { label: 'Hide Window', click: () => callbacks.onHide() }
-  ]
-  if (is.dev && callbacks.onToggleTestWidget) {
-    menu.push({ type: 'separator' }, { label: 'Toggle Test Widget (Dev)', click: () => callbacks.onToggleTestWidget?.() })
+    const menu: MenuItemConstructorOptions[] = [
+      { label: 'Open Z-Widgets', click: () => callbacks.onOpen() },
+      { label: 'Hide Window', click: () => callbacks.onHide() }
+    ]
+    if (is.dev && callbacks.onToggleTestWidget) {
+      menu.push({ type: 'separator' }, { label: 'Toggle Test Widget (Dev)', click: () => callbacks.onToggleTestWidget?.() })
+    }
+    menu.push({ type: 'separator' }, { label: 'Quit Z-Widgets', click: () => callbacks.onQuit() })
+
+    tray.setContextMenu(Menu.buildFromTemplate(menu))
+    tray.on('click', () => callbacks.onOpen())
+    tray.on('double-click', () => callbacks.onOpen())
+    return (trayInstance = tray)
+  } catch (err) {
+    console.warn('[TRAY] Failed to initialize tray:', err)
+    return null
   }
-  menu.push({ type: 'separator' }, { label: 'Quit Z-Widgets', click: () => callbacks.onQuit() })
-
-  tray.setContextMenu(Menu.buildFromTemplate(menu))
-  tray.on('click', () => callbacks.onOpen())
-  tray.on('double-click', () => callbacks.onOpen())
-  return (trayInstance = tray)
 }
 
 export const getTray = (): Tray | null => trayInstance

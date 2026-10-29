@@ -5,6 +5,7 @@
   "main": "./out/main/index.js",
   "author": {
     "name": "Zeesu Royalist",
+    "email": "rzeesu@gmail.com",
     "url": "https://zeesu-royalist.vercel.app"
   },
   "homepage": "https://zeesu-royalist.vercel.app",
@@ -50,7 +51,9 @@
     "appId": "com.zwidgets.app",
     "productName": "Z-Widgets",
     "electronLanguages": [
-      "en"
+      "en",
+      "en-US",
+      "en-GB"
     ],
     "compression": "maximum",
     "directories": {
@@ -64,7 +67,22 @@
       "category": "public.app-category.utilities"
     },
     "win": {
-      "target": "nsis"
+      "icon": "resources/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true
     },
     "linux": {
       "target": "AppImage"
