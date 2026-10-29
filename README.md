@@ -3,28 +3,29 @@
   <img src="resources/icon.png" alt="Z-Widgets" width="420" />
 
   # Z-Widgets
-  ### Add Widgets on your computer
+  ### Add Beautiful Desktop Widgets to Your Computer
 
   <p>
-    <strong>A simple, clean & beautiful desktop widget app for Mac, Windows, and Linux.</strong>
+    <strong>A modern, lightweight, and customizable desktop widget application for macOS, Windows, and Linux.</strong>
     <br />
     <em>Powered by <strong>Zeesu Royalist</strong></em>
   </p>
 
   <p>
     <img src="https://img.shields.io/badge/Powered%20by-Zeesu%20Royalist-34c759?style=for-the-badge" alt="Powered by Zeesu Royalist" />
-    <img src="https://img.shields.io/badge/Platforms-Mac%20%7C%20Windows%20%7C%20Linux-black?style=for-the-badge" alt="Platforms" />
+    <img src="https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux-black?style=for-the-badge" alt="Platforms" />
     <img src="https://img.shields.io/badge/Version-0.1.0-blue?style=for-the-badge" alt="Version" />
+    <img src="https://img.shields.io/badge/License-MIT-purple?style=for-the-badge" alt="License" />
   </p>
 
   ---
 
-  ### 🧭 Navigation
+  ### 🧭 Quick Navigation
   [**⬇️ Downloads**](#️-download-for-your-pc) &nbsp;•&nbsp; 
-  [**💡 What & Why?**](#-what-is-z-widgets--why-use-it) &nbsp;•&nbsp; 
+  [**💡 Overview**](#-what-is-z-widgets--why-use-it) &nbsp;•&nbsp; 
   [**🧩 Widgets List**](#-widgets-included) &nbsp;•&nbsp; 
-  [**💻 Run Code**](#-run-from-source-code-mac-windows-linux) &nbsp;•&nbsp; 
-  [**🚀 How to Install**](#-how-to-install-downloaded-app) &nbsp;•&nbsp; 
+  [**💻 Run from Source**](#-run-from-source-code-developers) &nbsp;•&nbsp; 
+  [**🚀 Installation Guide**](#-how-to-install-downloaded-app) &nbsp;•&nbsp; 
   [**👤 Creator**](#-powered-by)
 
 </div>
@@ -33,80 +34,80 @@
 
 ## ⬇️ Download for Your PC
 
-Click your operating system to download the ready-to-use app:
+Choose your operating system below to download the official standalone package:
 
-| Platform | Direct 1-Click Download Link | File Size | Setup / Installation |
+| Platform | Direct 1-Click Download Link | File Size | Description / Compatibility |
 | :--- | :--- | :---: | :--- |
-| 🍏 **macOS (Apple Silicon M1/M2/M3/M4)** | [**Download Mac Apple Silicon (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | Naye Macs (M1/M2/M3/M4) ke liye |
-| 🍏 **macOS (Intel Core i3/i5/i7/i9)** | [**Download Mac Intel (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | Intel Macs (2019 ya purane) ke liye |
-| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Windows.exe) | `77 MB` | Double click `.exe` to install |
-| 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.deb) | `70 MB` | Double click `.deb` to install directly |
+| 🍏 **macOS (Apple Silicon)** | [**Download Mac Apple Silicon (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | For modern Macs (**M1, M2, M3, M4**) |
+| 🍏 **macOS (Intel Core)** | [**Download Mac Intel (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | For Intel-based Macs (**2019 or earlier**) |
+| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Windows.exe) | `77 MB` | Standard installer for **Windows 10 & 11** |
+| 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.deb) | `70 MB` | Native installer for **Ubuntu, Debian, & Mint** |
 
-📁 **All Installers Folder**: [**Open Z-Widgets-Installers/ folder**](Z-Widgets-Installers/)
+📁 **Browse all packages**: [**Open Z-Widgets-Installers/ directory**](Z-Widgets-Installers/)
 
 > [!TIP]
-> **Windows User Tip**: Agar Windows Defender SmartScreen *"Windows protected your PC"* dikhaye, to **"More info"** par click karein aur **"Run anyway"** dabayein (ye naye unsigned open-source apps ke liye standard Windows security check hai).
+> **Windows SmartScreen Tip**: If Microsoft Defender SmartScreen displays *"Windows protected your PC"*, click **"More info"** and then select **"Run anyway"** (this is standard Windows security behavior for new unsigned open-source applications).
 > 
-> **Mac User Tip**: Agar Mac par *"App is damaged or unidentified developer"* aaye, to app icon par **Right-Click (Control + Click) > Open** karein, ya Terminal me `xattr -cr /Applications/Z-Widgets.app` run karein.
+> **macOS Security Tip**: If macOS prompts that the app is from an *"unidentified developer"*, **Right-Click (Control + Click) > Open** the app, or run `xattr -cr /Applications/Z-Widgets.app` in Terminal.
 > 
-> **Linux Ubuntu Tip**: Ubuntu par sabse aasan tareeka **`.deb`** file download karke double-click karke install karna hai. Ye seedha aapke Ubuntu Applications menu me Z-Widgets icon ke saath add ho jata hai!
+> **Linux Ubuntu Tip**: For Ubuntu, Debian, and Linux Mint, download the **`.deb`** package and double-click to install. It integrates directly into your system Applications launcher with the official Z-Widgets desktop icon.
 
 ---
 
 ## 💡 What is Z-Widgets & Why Use It?
 
-**Why this app exists:**
-Most computers hide widgets inside complicated menus or don't have them at all. You have to open browser tabs or separate apps just to take a quick note, check computer stats, or see the weather.
+### The Problem
+Most desktop operating systems either bury widgets inside hidden menus, sidebars, or lack them altogether. Constantly opening browser tabs or heavy apps just to jot down a quick note, check computer hardware vitals, or glance at the weather interrupts your workflow.
 
-**What Z-Widgets does:**
-It gives you **clean, floating desktop widgets** that sit right on your screen without getting in your way:
-- 🕒 Always see the time, date, and weather at a glance.
-- ⚡ Monitor your CPU and RAM usage in real-time.
-- 📝 Jot down notes and to-dos instantly on your desktop.
-- 📌 Pin widgets behind your work or keep them floating on top.
+### The Solution
+**Z-Widgets** brings clean, elegant, and persistent widgets directly onto your desktop:
+- 🕒 **Glanceable Information** — See the live digital clock, date, and local weather at any time.
+- ⚡ **Real-Time System Monitoring** — Keep an eye on live CPU load and RAM usage with animated visualizers.
+- 📝 **Frictionless Productivity** — Take quick auto-saving notes and manage daily to-dos with one-click checkboxes.
+- 📌 **Always Accessible** — Place widgets anywhere on your screen with hardware-accelerated fluid performance.
 
 ---
 
 ## 🧩 Widgets Included
 
-You get **9 ready-to-use widgets**:
+Z-Widgets comes loaded with **9 built-in widgets**:
 
-1. ⚡ **System Monitor** — Live CPU and RAM usage bars.
-2. 🕒 **Digital Clock** — Sleek clock with current date & seconds.
-3. 📝 **Quick Notes** — Auto-saving desktop sticky notes.
-4. ✅ **To-Do List** — Daily tasks with one-click checkboxes.
-5. ⛅ **Live Weather** — Temperature and weather condition.
-6. 📅 **Duo Calendar** — Clean 2-month desktop calendar view.
-7. 🖼️ **Photo Frame** — Desktop photo slideshow.
-8. 🌊 **Depth Dive** — Music and ambient companion.
-9. 🌐 **Telemetry** — Ping and network latency tracker.
+1. ⚡ **System Resource Monitor** — Real-time CPU and memory usage graphs with ambient audio-waveform equalizer visuals.
+2. 🕒 **Digital Clock** — Minimalist desktop clock displaying hours, minutes, seconds, date, and day progress.
+3. 📝 **Quick Notes** — Markdown sticky notes with auto-save and continuous persistent local storage.
+4. ✅ **To-Do List** — Daily task manager with one-click checkboxes and instant progress tracking.
+5. ⛅ **Live Weather** — Real-time temperature, conditions, and weather search powered by Open-Meteo.
+6. 📅 **Duo Calendar** — Clean dual-month desktop calendar view.
+7. 🖼️ **Photo Slideshow** — Ambient desktop photo frame with hardware-accelerated transitions.
+8. 🌊 **Depth Dive** — Music and ambient companion widget.
+9. 🌐 **Telemetry & Latency** — IPC diagnostics and system ping latency monitor.
 
 ---
 
-## 💻 Run from Source Code (Mac, Windows, Linux)
+## 💻 Run from Source Code (Developers)
 
-Agar aap code se chalana chahte hain ya developer hain, to ye 3 simple steps follow karein:
+If you are a developer and want to run or customize Z-Widgets from the source code, follow these steps:
 
-### 1. Prerequisites (Zaroori Software)
-- [Node.js](https://nodejs.org/) (v18 ya latest) install hona chahiye.
-- [Git](https://git-scm.com/) installed hona chahiye.
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
+- [Git](https://git-scm.com/)
 
-### 2. Clone & Install Dependencies
-Terminal ya Command Prompt me ye run karein:
+### 2. Clone the Repository & Install Dependencies
+Open your Terminal or Command Prompt and run:
 
 ```bash
-# 1. Clone the repo
+# Clone the repository
 git clone https://github.com/zeesu-royalist/Z-Widgets-Desktop-App.git
 
-# 2. Project folder me jayein
+# Navigate into the project folder
 cd Z-Widgets-Desktop-App
 
-# 3. Saare packages install karein
+# Install dependencies
 npm install
 ```
 
-### 3. Run the App (Development Mode)
-Teeno OS (**Mac**, **Windows**, aur **Linux**) par app chalane ke liye:
+### 3. Launch the App (Development Mode)
+Start the app with live hot-reloading on macOS, Windows, or Linux:
 
 ```bash
 npm run dev
@@ -114,57 +115,63 @@ npm run dev
 
 ---
 
-### 📦 Build Standalone App (Package into .exe, .dmg, .AppImage)
+### 📦 Build Standalone Installers
 
-Code se bina code wala installer app generate karne ke liye ye commands run karein:
+To compile standalone production packages for any platform:
 
-- **🍏 Mac ke liye (`.dmg` file)**:
+- **🍏 macOS (Apple Silicon M1/M2/M3/M4)**:
   ```bash
-  npm run build:mac
+  npm run build:mac:arm
   ```
-- **🪟 Windows ke liye (`.exe` installer)**:
+- **🍏 macOS (Intel Core i3/i5/i7/i9)**:
+  ```bash
+  npm run build:mac:intel
+  ```
+- **🪟 Windows (.exe installer)**:
   ```bash
   npm run build:win
   ```
-- **🐧 Linux ke liye (`.AppImage` file)**:
+- **🐧 Linux (.deb package)**:
   ```bash
   npm run build:linux
   ```
-- **🌍 Teeno OS ek saath build karne ke liye**:
+- **🌍 Build All Platforms Simultaneously**:
   ```bash
   npm run build:all
   ```
 
-> Build hone ke baad ready installable files aapke **`dist/`** folder me milengi!
+> Built packages will be saved inside the **`dist/`** directory.
 
 ---
 
 ## 🚀 How to Install Downloaded App
 
-Agar aapne direct file download ki hai:
+Follow the instructions for your operating system:
 
-- **🍏 Mac Users (Apple Silicon vs Intel)**:
-  1. **Apna Mac check karein**: Screen ke top-left corner me **Apple Menu () > About This Mac** par click karein.
-     - Agar **Chip: Apple M1/M2/M3/M4** likha hai 👉 [**Apple Silicon DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg) download karein.
-     - Agar **Processor: Intel Core i3/i5/i7/i9** likha hai 👉 [**Intel DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg) download karein.
-  2. Downloaded `.dmg` file open karein aur `Z-Widgets` ko `Applications` folder me drag karein.
-  3. Pehli baar open karne ke liye: App par **Right-Click (Control + Click) > Open** karein.
+### 🍏 macOS Users (Apple Silicon vs. Intel)
+1. **Identify your Mac chip:**
+   - Click the **Apple Menu ()** at the top-left corner of your screen > **About This Mac**.
+   - If it says **Chip: Apple M1 / M2 / M3 / M4** 👉 Download [**Apple Silicon DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg).
+   - If it says **Processor: Intel Core i5 / i7 / i9** 👉 Download [**Intel DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg).
+2. Open the downloaded `.dmg` file and drag `Z-Widgets` into your **Applications** folder.
+3. On first launch: **Right-Click (Control + Click) > Open** to launch the app.
 
-- **🪟 Windows Users**:
-  1. `Z-Widgets-for-Windows.exe` par double-click karein.
-  2. Agar *"Windows protected your PC"* aaye: **"More info"** dabayein aur **"Run anyway"** click karein.
-  3. Setup wizard desktop shortcut bana dega aur app start ho jayega!
+### 🪟 Windows Users
+1. Download and double-click `Z-Widgets-for-Windows.exe`.
+2. If Windows Defender SmartScreen shows *"Windows protected your PC"*, click **"More info"** and then **"Run anyway"**.
+3. The setup wizard will create a desktop shortcut and launch Z-Widgets automatically.
 
-- **🐧 Linux (Ubuntu / Debian / Mint) Users**:
-  1. `Z-Widgets-for-Linux.deb` download karein.
-  2. Double-click karke **Install** button dabayein (ya terminal me `sudo dpkg -i Z-Widgets-for-Linux.deb`).
-  3. App seedha aapke Ubuntu Applications menu me Z-Widgets icon ke saath add ho jayegi!
+### 🐧 Linux (Ubuntu / Debian / Linux Mint) Users
+1. Download `Z-Widgets-for-Linux.deb`.
+2. Double-click the `.deb` file and click **Install** in the software manager (or run `sudo dpkg -i Z-Widgets-for-Linux.deb` in terminal).
+3. Open Z-Widgets from your system's application launcher.
 
 ---
 
-## ⌨️ Quick Shortcut
+## ⌨️ Useful Keyboard Shortcuts
 
-- Press `Cmd + F` (Mac) or `Ctrl + F` (Windows/Linux) to instantly search any widget.
+- **`Cmd + F`** (Mac) or **`Ctrl + F`** (Windows / Linux) — Instantly focus the widget search bar.
+- **`F12`** or **`Ctrl + Shift + I`** (Mac: **`Cmd + Option + I`**) — Toggle Developer Tools / Console.
 
 ---
 
@@ -173,5 +180,5 @@ Agar aapne direct file download ki hai:
 <p align="center">
   Designed & Created with ❤️ by <strong>Zeesu Royalist</strong>
   <br /><br />
-  🌐 <a href="https://zeesu-royalist.vercel.app"><strong>Visit Portfolio Website: zeesu-royalist.vercel.app</strong></a>
+  🌐 <a href="https://zeesu-royalist.vercel.app"><strong>Visit Portfolio: zeesu-royalist.vercel.app</strong></a>
 </p>
