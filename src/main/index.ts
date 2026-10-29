@@ -101,6 +101,24 @@ export function showMainWindow(): void {
 
 export function hideMainWindow(): void { getMainWindow()?.hide() }
 export function toggleMainWindow(): void { getMainWindow()?.isVisible() ? hideMainWindow() : showMainWindow() }
+export function minimizeMainWindow(): void { getMainWindow()?.minimize() }
+export function maximizeMainWindow(): boolean {
+  const win = getMainWindow()
+  if (win && !win.isDestroyed()) {
+    if (win.isMaximized()) {
+      win.unmaximize()
+      return false
+    } else {
+      win.maximize()
+      return true
+    }
+  }
+  return false
+}
+export function isMainWindowMaximized(): boolean {
+  const win = getMainWindow()
+  return Boolean(win && !win.isDestroyed() && win.isMaximized())
+}
 
 // --- Security & IPC Validation ---
 const isMain = (e: IpcMainInvokeEvent): boolean => {
@@ -122,6 +140,9 @@ function registerIpcHandlers(): void {
   ipcMain.handle(IPC_CHANNELS.HIDE_MAIN_WINDOW, async (e) => isMain(e) ? (hideMainWindow(), true) : false)
   ipcMain.handle(IPC_CHANNELS.SHOW_MAIN_WINDOW, async (e) => isMain(e) ? (showMainWindow(), true) : false)
   ipcMain.handle(IPC_CHANNELS.TOGGLE_MAIN_WINDOW, async (e) => isMain(e) ? (toggleMainWindow(), true) : false)
+  ipcMain.handle(IPC_CHANNELS.MINIMIZE_MAIN_WINDOW, async (e) => isMain(e) ? (minimizeMainWindow(), true) : false)
+  ipcMain.handle(IPC_CHANNELS.MAXIMIZE_MAIN_WINDOW, async (e) => isMain(e) ? maximizeMainWindow() : false)
+  ipcMain.handle(IPC_CHANNELS.IS_MAXIMIZED, async (e) => isMain(e) ? isMainWindowMaximized() : false)
 
   ipcMain.handle(IPC_CHANNELS.GET_STARTUP_SETTINGS, async (e): Promise<StartupSettings> => {
     if (!isMain(e)) throw new Error('Unauthorized')
