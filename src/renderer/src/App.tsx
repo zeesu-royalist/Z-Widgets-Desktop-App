@@ -802,9 +802,11 @@ export const App: React.FC = () => {
 
   const refreshPersistedList = (): void => {
     window.api?.getPersistedWidgets?.().then((items) => {
-      setPersistedWidgets(items)
-      const hidden = items.filter((i) => i.isVisible === false).map((i) => i.id)
-      if (hidden.length) setHiddenWidgetIds((prev) => new Set([...prev, ...hidden]))
+      if (Array.isArray(items)) {
+        setPersistedWidgets(items)
+        const hidden = items.filter((i) => i?.isVisible === false).map((i) => i.id)
+        if (hidden.length) setHiddenWidgetIds((prev) => new Set([...prev, ...hidden]))
+      }
     }).catch(console.error)
   }
 

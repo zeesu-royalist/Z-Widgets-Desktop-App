@@ -104,6 +104,12 @@ export function createWidgetWindow(config: WidgetWindowConfig): BrowserWindow {
   win.webContents.on('will-navigate', (e, u) => {
     if (u !== win.webContents.getURL()) { e.preventDefault(); shell.openExternal(u) }
   })
+  win.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL) => {
+    console.error(`[WIDGET "${config.id}" LOAD FAILED] Error: ${errorCode} (${errorDescription}) URL: ${validatedURL}`)
+  })
+  win.webContents.on('render-process-gone', (_event, details) => {
+    console.error(`[WIDGET "${config.id}" CRASHED] Reason: ${details.reason}, Exit: ${details.exitCode}`)
+  })
 
   const hash = `/widget/${encodeURIComponent(config.id)}?type=${encodeURIComponent(type)}`
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

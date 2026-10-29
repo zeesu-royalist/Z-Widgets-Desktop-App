@@ -44,13 +44,31 @@ export function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
     width: DEFAULT_WINDOW_WIDTH, height: DEFAULT_WINDOW_HEIGHT,
     minWidth: MIN_WINDOW_WIDTH, minHeight: MIN_WINDOW_HEIGHT,
-    title: APP_NAME, show: false, autoHideMenuBar: true, backgroundColor: '#0a0a0c',
+    title: APP_NAME, show: false, autoHideMenuBar: true, backgroundColor: '#121316',
     icon: safeIcon,
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 16, y: 16 }, vibrancy: 'under-window' } : {}),
     webPreferences: { preload: join(__dirname, '../preload/index.js'), sandbox: false, contextIsolation: true, nodeIntegration: false }
   })
 
   mainWindow = win
+
+  win.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL) => {
+    console.error(`[MAIN LOAD FAILED] Error: ${errorCode} (${errorDescription}) URL: ${validatedURL}`)
+  })
+  win.webContents.on('render-process-gone', (_event, details) => {
+    console.error(`[RENDERER PROCESS CRASHED] Reason: ${details.reason}, Exit Code: ${details.exitCode}`)
+  })
+  win.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+    const levels = ['DEBUG', 'INFO', 'WARN', 'ERROR']
+    console.log(`[RENDERER-${levels[level] || level}] ${message} (${sourceId || 'app'}:${line})`)
+  })
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.type === 'keyDown' && (input.key === 'F12' || ((input.control || input.meta) && input.shift && input.key.toLowerCase() === 'i'))) {
+      win.webContents.toggleDevTools()
+      event.preventDefault()
+    }
+  })
+
   win.once('ready-to-show', () => { win.show(); win.focus() })
   win.webContents.on('did-finish-load', () => {
     if (!win.isVisible()) { win.show(); win.focus() }
@@ -181,8 +199,23 @@ function registerIpcHandlers(): void {
 
 app.name = APP_NAME
 
+// Fix Linux black screen / Wayland / Mesa / VirtualBox driver crashes
 if (process.platform === 'linux') {
+  try {
+    app.disableHardwareAcceleration()
+  } catch (err) {
+    console.warn('[GPU] Failed to disable hardware acceleration:', err)
+  }
   app.commandLine.appendSwitch('no-sandbox')
+  app.commandLine.appendSwitch('disable-gpu')
+  app.commandLine.appendSwitch('disable-software-rasterizer')
+}
+
+// Allow explicit --disable-gpu flag on any platform (e.g. Windows VM / old Intel drivers)
+if (process.argv.includes('--disable-gpu') || process.argv.includes('--no-gpu')) {
+  try {
+    app.disableHardwareAcceleration()
+  } catch {}
 }
 
 if (!app.requestSingleInstanceLock()) {

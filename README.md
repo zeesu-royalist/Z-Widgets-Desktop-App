@@ -35,16 +35,20 @@
 
 Click your operating system to download the ready-to-use app:
 
-| Platform | Direct 1-Click Download Link | File Size | Setup |
+| Platform | Direct 1-Click Download Link | File Size | Setup / Installation |
 | :--- | :--- | :---: | :--- |
 | 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
 | 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Windows.exe) | `77 MB` | Double click `.exe` to install |
-| 🐧 **Linux** | [**Download for Linux (.AppImage)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.AppImage) | `79 MB` | One-click executable file |
+| 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.deb) | `70 MB` | Double click `.deb` to install directly |
 
 📁 **All Installers Folder**: [**Open Z-Widgets-Installers/ folder**](Z-Widgets-Installers/)
 
-> [!NOTE]
-> **Mac Security Tip**: If Mac shows a security warning on first open, just **Right-Click (Control + Click) > Open**, or run `xattr -cr /Applications/Z-Widgets.app` in Terminal.
+> [!TIP]
+> **Windows User Tip**: Agar Windows Defender SmartScreen *"Windows protected your PC"* dikhaye, to **"More info"** par click karein aur **"Run anyway"** dabayein (ye naye unsigned open-source apps ke liye standard Windows security check hai).
+> 
+> **Mac User Tip**: Agar Mac par *"App is damaged or unidentified developer"* aaye, to app icon par **Right-Click (Control + Click) > Open** karein, ya Terminal me `xattr -cr /Applications/Z-Widgets.app` run karein.
+> 
+> **Linux Ubuntu Tip**: Ubuntu par sabse aasan tareeka **`.deb`** file download karke double-click karke install karna hai. Ye seedha aapke Ubuntu Applications menu me Z-Widgets icon ke saath add ho jata hai!
 
 ---
 
@@ -136,11 +140,22 @@ Code se bina code wala installer app generate karne ke liye ye commands run kare
 
 ## 🚀 How to Install Downloaded App
 
-Agar aapne upar diye gaye links se direct file download ki hai:
+Agar aapne direct file download ki hai:
 
-- **🍏 Mac**: `.dmg` file open karein, `Z-Widgets` ko `Applications` me drag karein aur open karein!
-- **🪟 Windows**: `Z-Widgets Setup 0.1.0.exe` par double-click karke install karein.
-- **🐧 Linux**: `Z-Widgets-0.1.0.AppImage` par Right-click > *Properties* > *Permissions* > *Allow executing as program* enable karein, fir run karein.
+- **🍏 Mac Users**:
+  1. `Z-Widgets-for-Mac.dmg` open karein.
+  2. `Z-Widgets` ko `Applications` folder me drag karein.
+  3. Pehli baar open karne ke liye: **Right-Click > Open** karein.
+
+- **🪟 Windows Users**:
+  1. `Z-Widgets-for-Windows.exe` par double-click karein.
+  2. Agar *"Windows protected your PC"* aaye: **"More info"** dabayein aur **"Run anyway"** click karein.
+  3. Setup wizard desktop shortcut bana dega aur app start ho jayega!
+
+- **🐧 Linux (Ubuntu / Debian / Mint) Users**:
+  1. `Z-Widgets-for-Linux.deb` download karein.
+  2. Double-click karke **Install** button dabayein (ya terminal me `sudo dpkg -i Z-Widgets-for-Linux.deb`).
+  3. App seedha aapke Ubuntu Applications menu me Z-Widgets icon ke saath add ho jayegi!
 
 ---
 
