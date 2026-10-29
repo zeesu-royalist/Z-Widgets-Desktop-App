@@ -23,7 +23,8 @@
   [**⬇️ Downloads**](#️-download-for-your-pc) &nbsp;•&nbsp; 
   [**💡 What & Why?**](#-what-is-z-widgets--why-use-it) &nbsp;•&nbsp; 
   [**🧩 Widgets List**](#-widgets-included) &nbsp;•&nbsp; 
-  [**🚀 How to Install**](#-how-to-install) &nbsp;•&nbsp; 
+  [**💻 Run Code**](#-run-from-source-code-mac-windows-linux) &nbsp;•&nbsp; 
+  [**🚀 How to Install**](#-how-to-install-downloaded-app) &nbsp;•&nbsp; 
   [**👤 Creator**](#-powered-by)
 
 </div>
@@ -34,13 +35,13 @@
 
 Click your operating system to download the ready-to-use app:
 
-| Platform | Download Link | File Size | Setup |
+| Platform | Direct 1-Click Download Link | File Size | Setup |
 | :--- | :--- | :---: | :--- |
-| 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.0/Z-Widgets-0.1.0-arm64.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
-| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.0/Z-Widgets%20Setup%200.1.0.exe) | `77 MB` | Double click `.exe` to install |
-| 🐧 **Linux** | [**Download for Linux (.AppImage)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.0/Z-Widgets-0.1.0.AppImage) | `79 MB` | One-click executable file |
+| 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/downloads/Z-Widgets-0.1.0-arm64.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
+| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/downloads/Z-Widgets-Setup-0.1.0.exe) | `77 MB` | Double click `.exe` to install |
+| 🐧 **Linux** | [**Download for Linux (.AppImage)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/downloads/Z-Widgets-0.1.0.AppImage) | `79 MB` | One-click executable file |
 
-📦 **View All Releases & Assets**: [**GitHub Releases Page**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases)
+📁 **All Installers Folder**: [**Open downloads/ folder**](downloads/)
 
 > [!NOTE]
 > **Mac Security Tip**: If Mac shows a security warning on first open, just **Right-Click (Control + Click) > Open**, or run `xattr -cr /Applications/Z-Widgets.app` in Terminal.
@@ -77,11 +78,69 @@ You get **9 ready-to-use widgets**:
 
 ---
 
-## 🚀 How to Install
+## 💻 Run from Source Code (Mac, Windows, Linux)
 
-- **🍏 Mac**: Open the downloaded `.dmg` file, drag `Z-Widgets` into your `Applications` folder, and launch!
-- **🪟 Windows**: Open `Z-Widgets Setup 0.1.0.exe` and follow the quick 1-click setup.
-- **🐧 Linux**: Right-click `Z-Widgets-0.1.0.AppImage` > *Properties* > *Permissions* > check *Allow executing file as program*, then double click to run.
+Agar aap code se chalana chahte hain ya developer hain, to ye 3 simple steps follow karein:
+
+### 1. Prerequisites (Zaroori Software)
+- [Node.js](https://nodejs.org/) (v18 ya latest) install hona chahiye.
+- [Git](https://git-scm.com/) installed hona chahiye.
+
+### 2. Clone & Install Dependencies
+Terminal ya Command Prompt me ye run karein:
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/zeesu-royalist/Z-Widgets-Desktop-App.git
+
+# 2. Project folder me jayein
+cd Z-Widgets-Desktop-App
+
+# 3. Saare packages install karein
+npm install
+```
+
+### 3. Run the App (Development Mode)
+Teeno OS (**Mac**, **Windows**, aur **Linux**) par app chalane ke liye:
+
+```bash
+npm run dev
+```
+
+---
+
+### 📦 Build Standalone App (Package into .exe, .dmg, .AppImage)
+
+Code se bina code wala installer app generate karne ke liye ye commands run karein:
+
+- **🍏 Mac ke liye (`.dmg` file)**:
+  ```bash
+  npm run build:mac
+  ```
+- **🪟 Windows ke liye (`.exe` installer)**:
+  ```bash
+  npm run build:win
+  ```
+- **🐧 Linux ke liye (`.AppImage` file)**:
+  ```bash
+  npm run build:linux
+  ```
+- **🌍 Teeno OS ek saath build karne ke liye**:
+  ```bash
+  npm run build:all
+  ```
+
+> Build hone ke baad ready installable files aapke **`dist/`** folder me milengi!
+
+---
+
+## 🚀 How to Install Downloaded App
+
+Agar aapne upar diye gaye links se direct file download ki hai:
+
+- **🍏 Mac**: `.dmg` file open karein, `Z-Widgets` ko `Applications` me drag karein aur open karein!
+- **🪟 Windows**: `Z-Widgets Setup 0.1.0.exe` par double-click karke install karein.
+- **🐧 Linux**: `Z-Widgets-0.1.0.AppImage` par Right-click > *Properties* > *Permissions* > *Allow executing as program* enable karein, fir run karein.
 
 ---
 
