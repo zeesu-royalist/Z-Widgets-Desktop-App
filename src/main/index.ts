@@ -1,5 +1,6 @@
 import { app, ipcMain, IpcMainInvokeEvent, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
+import { existsSync } from 'fs'
 import { is, electronApp, optimizer } from '@electron-toolkit/utils'
 import {
   APP_NAME, APP_VERSION, IPC_CHANNELS, DEV_TEST_WIDGET_ID,
@@ -176,40 +177,52 @@ if (!app.requestSingleInstanceLock()) {
   app.on('second-instance', () => showMainWindow())
 
   app.whenReady().then(() => {
-    electronApp.setAppUserModelId('com.zwidgets.app')
-    if (process.platform === 'darwin' && app.dock) app.dock.setIcon(join(__dirname, '../../resources/icon.png'))
-    app.on('browser-window-created', (_, window) => optimizer.watchWindowShortcuts(window))
-
-    registerIpcHandlers()
-    createMainWindow()
-    initDisplayWatchers(() => recoverActiveWidgets())
-    restorePersistedWidgets().catch((err) => console.warn('[STARTUP] Failed to restore saved widgets:', err))
-
-    onWidgetStateChange((activeIds) => {
-      const mainWin = getMainWindow()
-      if (mainWin && !mainWin.isDestroyed()) {
-        mainWin.webContents.send(IPC_CHANNELS.WIDGET_STATE_CHANGED, activeIds)
+    try {
+      electronApp.setAppUserModelId('com.zwidgets.app')
+      if (is.dev && process.platform === 'darwin' && app.dock) {
+        const devIconPath = join(__dirname, '../../resources/icon.png')
+        if (existsSync(devIconPath)) {
+          try { app.dock.setIcon(devIconPath) } catch { }
+        }
       }
-    })
+      app.on('browser-window-created', (_, window) => optimizer.watchWindowShortcuts(window))
 
-    initTray({
-      onOpen: () => showMainWindow(),
-      onHide: () => hideMainWindow(),
-      onQuit: () => {
-        setIsQuitting(true)
-        closeAllWidgetWindows()
-        flushStorageSync()
-        destroyTray()
-        app.quit()
-      },
-      onToggleTestWidget: () => {
-        getActiveWidgetIds().includes(DEV_TEST_WIDGET_ID)
-          ? toggleWidgetWindow(DEV_TEST_WIDGET_ID)
-          : createWidgetWindow({ id: DEV_TEST_WIDGET_ID, title: 'Test Widget Host', width: 320, height: 180, placementMode: 'desktop' })
-      }
-    })
+      registerIpcHandlers()
+      createMainWindow()
+      initDisplayWatchers(() => recoverActiveWidgets())
+      restorePersistedWidgets().catch((err) => console.warn('[STARTUP] Failed to restore saved widgets:', err))
 
-    app.on('activate', () => showMainWindow())
+      onWidgetStateChange((activeIds) => {
+        const mainWin = getMainWindow()
+        if (mainWin && !mainWin.isDestroyed()) {
+          mainWin.webContents.send(IPC_CHANNELS.WIDGET_STATE_CHANGED, activeIds)
+        }
+      })
+
+      initTray({
+        onOpen: () => showMainWindow(),
+        onHide: () => hideMainWindow(),
+        onQuit: () => {
+          setIsQuitting(true)
+          closeAllWidgetWindows()
+          flushStorageSync()
+          destroyTray()
+          app.quit()
+        },
+        onToggleTestWidget: () => {
+          getActiveWidgetIds().includes(DEV_TEST_WIDGET_ID)
+            ? toggleWidgetWindow(DEV_TEST_WIDGET_ID)
+            : createWidgetWindow({ id: DEV_TEST_WIDGET_ID, title: 'Test Widget Host', width: 320, height: 180, placementMode: 'desktop' })
+        }
+      })
+
+      app.on('activate', () => showMainWindow())
+    } catch (err) {
+      console.error('[FATAL STARTUP ERROR]', err)
+      createMainWindow()
+    }
+  }).catch((err) => {
+    console.error('[WHEN_READY FATAL ERROR]', err)
   })
 
   app.on('before-quit', (event) => {

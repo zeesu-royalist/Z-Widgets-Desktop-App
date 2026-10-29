@@ -53,7 +53,8 @@
       "buildResources": "resources"
     },
     "files": [
-      "out/**/*"
+      "out/**/*",
+      "resources/**/*"
     ],
     "mac": {
       "category": "public.app-category.utilities"
