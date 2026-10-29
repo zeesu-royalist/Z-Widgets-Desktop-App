@@ -1,127 +1,100 @@
-# 🌟 Z-Widgets
+<div align="center">
 
-<p align="center">
-  <strong>A modern, lightweight desktop widget suite with a native Apple macOS aesthetic.</strong>
-  <br />
-  <em>Everything you need — system stats, sticky notes, weather, and clock — floating right on your desktop.</em>
-</p>
+  <img src="resources/icon.png" alt="Z-Widgets" width="420" />
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-black?style=for-the-badge&logo=apple" alt="Platforms" />
-  <img src="https://img.shields.io/badge/Electron-34.x-47848F?style=for-the-badge&logo=electron&logoColor=white" alt="Electron" />
-  <img src="https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
-  <img src="https://img.shields.io/badge/License-MIT-34c759?style=for-the-badge" alt="License" />
-</p>
+  # Z-Widgets
+  ### Add Widgets on your computer
 
-<p align="center">
-  <img src="resources/preview.png" alt="Z-Widgets App Preview" width="850" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" />
-</p>
+  <p>
+    <strong>A simple, clean & beautiful desktop widget app for Mac, Windows, and Linux.</strong>
+    <br />
+    <em>Powered by <strong>Zeesu Royalist</strong></em>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Powered%20by-Zeesu%20Royalist-34c759?style=for-the-badge" alt="Powered by Zeesu Royalist" />
+    <img src="https://img.shields.io/badge/Platforms-Mac%20%7C%20Windows%20%7C%20Linux-black?style=for-the-badge" alt="Platforms" />
+    <img src="https://img.shields.io/badge/Version-0.1.0-blue?style=for-the-badge" alt="Version" />
+  </p>
+
+  ---
+
+  ### 🧭 Navigation
+  [**⬇️ Downloads**](#️-download-for-your-pc) &nbsp;•&nbsp; 
+  [**💡 What & Why?**](#-what-is-z-widgets--why-use-it) &nbsp;•&nbsp; 
+  [**🧩 Widgets List**](#-widgets-included) &nbsp;•&nbsp; 
+  [**🚀 How to Install**](#-how-to-install) &nbsp;•&nbsp; 
+  [**👤 Creator**](#-powered-by)
+
+</div>
 
 ---
 
-## ⬇️ Direct 1-Click Downloads (Install Ready)
+## ⬇️ Download for Your PC
 
-No coding required! Download the ready-to-run app for your computer:
+Click your operating system to download the ready-to-use app:
 
-| Operating System | Download File | Size | How to Run |
+| Platform | Download Link | File Size | Setup |
 | :--- | :--- | :---: | :--- |
-| 🍏 **macOS** *(Apple Silicon)* | [**Download .dmg**](dist/Z-Widgets-0.1.0-arm64.dmg) | `94 MB` | Double-click `.dmg` & drag to Applications |
-| 🪟 **Windows** *(64-bit & ARM)* | [**Download .exe Setup**](dist/Z-Widgets%20Setup%200.1.0.exe) | `77 MB` | Double-click installer `.exe` & launch |
-| 🐧 **Linux** *(Standard x64)* | [**Download .AppImage**](dist/Z-Widgets-0.1.0.AppImage) | `79 MB` | Right-click > Allow executing as program > Run |
-| 🐧 **Linux** *(ARM64)* | [**Download .AppImage (arm64)**](dist/Z-Widgets-0.1.0-arm64.AppImage) | `73 MB` | Standalone executable for ARM Linux |
+| 🍏 **macOS** | [**Download for Mac (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.0/Z-Widgets-0.1.0-arm64.dmg) | `94 MB` | Open `.dmg` & drag to Applications |
+| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.0/Z-Widgets%20Setup%200.1.0.exe) | `77 MB` | Double click `.exe` to install |
+| 🐧 **Linux** | [**Download for Linux (.AppImage)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.0/Z-Widgets-0.1.0.AppImage) | `79 MB` | One-click executable file |
 
-> [!TIP]
-> **First-time macOS Opening**:  
-> If Mac displays an *"Unidentified Developer"* alert on an unsigned build, simply **Right Click (Control + Click) > Open**, or run this 1-line command in Terminal:
-> ```bash
-> xattr -cr /Applications/Z-Widgets.app
-> ```
+📦 **View All Releases & Assets**: [**GitHub Releases Page**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases)
+
+> [!NOTE]
+> **Mac Security Tip**: If Mac shows a security warning on first open, just **Right-Click (Control + Click) > Open**, or run `xattr -cr /Applications/Z-Widgets.app` in Terminal.
 
 ---
 
-## ❓ Why Z-Widgets? (App Kyu Hai?)
+## 💡 What is Z-Widgets & Why Use It?
 
-Most operating systems either don't have widgets, or hide them behind sidebars and menus. Switching browser tabs just to take a quick note, check CPU usage, or check the weather breaks your focus.
+**Why this app exists:**
+Most computers hide widgets inside complicated menus or don't have them at all. You have to open browser tabs or separate apps just to take a quick note, check computer stats, or see the weather.
 
-**Z-Widgets solves this problem:**
-- It puts elegant, distraction-free widgets directly on your desktop.
-- Everything important is **always one glance away**.
-- Built with Apple's clean design principles — rounded corners, frosted glass vibrancy blur, and zero clutter.
-
----
-
-## 🎯 What Does It Do? (Kya Karta Hai?)
-
-Z-Widgets gives you **9 high-performance desktop widgets** that you can toggle on or off with a single click:
-
-| Widget | What It Does | Placement Mode |
-| :--- | :--- | :--- |
-| ⚡ **System Monitor** | Live CPU usage, RAM utilization, core count & uptime | Desktop / Floating |
-| 🕒 **Digital Clock** | Sleek modern clock with date, seconds, and time | Desktop / Floating |
-| 📝 **Quick Notes** | Sticky note scratchpad that auto-saves your text instantly | Desktop / Floating |
-| ✅ **To-Do List** | Daily checklist with interactive checkboxes to finish tasks | Desktop / Floating |
-| ⛅ **Live Weather** | Real-time temperature, weather icon, and multi-city search | Desktop / Floating |
-| 📅 **Duo Calendar** | Dual-month calendar with today's date highlighted | Desktop / Floating |
-| 🖼️ **Photo Frame** | Rotating desktop slideshow with custom interval & fit mode | Desktop / Floating |
-| 🌊 **Depth Dive** | Ambient sound and audio companion widget | Desktop / Floating |
-| 🌐 **Telemetry** | Internet ping and network latency monitor | Desktop / Floating |
+**What Z-Widgets does:**
+It gives you **clean, floating desktop widgets** that sit right on your screen without getting in your way:
+- 🕒 Always see the time, date, and weather at a glance.
+- ⚡ Monitor your CPU and RAM usage in real-time.
+- 📝 Jot down notes and to-dos instantly on your desktop.
+- 📌 Pin widgets behind your work or keep them floating on top.
 
 ---
 
-## ✨ Key Highlights
+## 🧩 Widgets Included
 
-- 🪟 **Multi-Window Transparency** — Each widget runs in its own frameless, transparent, draggable window.
-- 📌 **3 Placement Modes** —
-  - **Desktop**: Pinned behind all your open apps (never gets in your way).
-  - **Floating**: Moves freely across your screen.
-  - **Always on Top**: Stays above all windows for urgent tasks.
-- 💾 **Smart Auto-Save** — Remembers exact screen coordinates `(x, y)` and sizes across restarts.
-- 🖥️ **Display Watcher** — Disconnecting an external monitor? Widgets automatically pull back into your main screen.
-- ⚡ **Instant Search** — Press `Cmd/Ctrl + F` to find any widget in milliseconds.
-- 🎛️ **Menubar / System Tray** — Quick show/hide toggle right from your top menu bar.
+You get **9 ready-to-use widgets**:
 
----
-
-## ⌨️ Keyboard Shortcuts
-
-| Shortcut | Action |
-| :--- | :--- |
-| `Cmd / Ctrl + F` | Instant focus on the widget search bar |
-| `Esc` | Close Settings modal / Clear search query |
-| `Cmd / Ctrl + W` | Hide the dashboard to system tray |
-| `Cmd / Ctrl + Q` | Quit the application completely |
+1. ⚡ **System Monitor** — Live CPU and RAM usage bars.
+2. 🕒 **Digital Clock** — Sleek clock with current date & seconds.
+3. 📝 **Quick Notes** — Auto-saving desktop sticky notes.
+4. ✅ **To-Do List** — Daily tasks with one-click checkboxes.
+5. ⛅ **Live Weather** — Temperature and weather condition.
+6. 📅 **Duo Calendar** — Clean 2-month desktop calendar view.
+7. 🖼️ **Photo Frame** — Desktop photo slideshow.
+8. 🌊 **Depth Dive** — Music and ambient companion.
+9. 🌐 **Telemetry** — Ping and network latency tracker.
 
 ---
 
-## 🛠️ Developer Setup (Build from Source)
+## 🚀 How to Install
 
-If you want to modify or run the source code:
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/your-username/Z-Widgets.git
-cd Z-Widgets
-
-# 2. Install dependencies
-npm install
-
-# 3. Start development server
-npm run dev
-
-# 4. Build for your OS
-npm run build:mac     # For macOS (.dmg)
-npm run build:win     # For Windows (.exe)
-npm run build:linux   # For Linux (.AppImage)
-```
+- **🍏 Mac**: Open the downloaded `.dmg` file, drag `Z-Widgets` into your `Applications` folder, and launch!
+- **🪟 Windows**: Open `Z-Widgets Setup 0.1.0.exe` and follow the quick 1-click setup.
+- **🐧 Linux**: Right-click `Z-Widgets-0.1.0.AppImage` > *Properties* > *Permissions* > check *Allow executing file as program*, then double click to run.
 
 ---
 
-## 👤 Author & Credits
+## ⌨️ Quick Shortcut
 
-Crafted with care by **Zeesu Royalist**.
+- Press `Cmd + F` (Mac) or `Ctrl + F` (Windows/Linux) to instantly search any widget.
 
-- 🌐 **Portfolio**: [zeesu-royalist.vercel.app](https://zeesu-royalist.vercel.app)
-- 💼 **Project**: Z-Widgets (v0.1.0)
-- 📄 **License**: [MIT](LICENSE)
+---
+
+## 👤 Powered by
+
+<p align="center">
+  Designed & Created with ❤️ by <strong>Zeesu Royalist</strong>
+  <br /><br />
+  🌐 <a href="https://zeesu-royalist.vercel.app"><strong>Visit Portfolio Website: zeesu-royalist.vercel.app</strong></a>
+</p>
