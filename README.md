@@ -32,18 +32,18 @@
 
 ---
 
-## ⬇️ Download for Your PC
+## ⬇️ Download for Your PC (Latest v0.1.1)
 
-Choose your operating system below to download the official standalone package:
+Choose your operating system below for high-speed direct downloads hosted on GitHub Global CDN:
 
-| Platform | Direct 1-Click Download Link | File Size | Description / Compatibility |
+| Platform | Direct 1-Click Fast Download Link | File Size | Description / Compatibility |
 | :--- | :--- | :---: | :--- |
-| 🍏 **macOS (Apple Silicon)** | [**Download Mac Apple Silicon (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | For modern Macs (**M1, M2, M3, M4**) |
-| 🍏 **macOS (Intel Core)** | [**Download Mac Intel (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | For Intel-based Macs (**2019 or earlier**) |
-| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Windows.exe) | `77 MB` | Standard installer for **Windows 10 & 11** |
-| 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Linux.deb) | `70 MB` | Native installer for **Ubuntu, Debian, & Mint** |
+| 🍏 **macOS (Apple Silicon)** | [**Download Mac Apple Silicon (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | For modern Macs (**M1, M2, M3, M4**) |
+| 🍏 **macOS (Intel Core)** | [**Download Mac Intel (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | For Intel-based Macs (**2019 or earlier**) |
+| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Windows.exe) | `77 MB` | Standard installer for **Windows 10 & 11** |
+| 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb) | `70 MB` | Native installer for **Ubuntu, Debian, & Mint** |
 
-📁 **Browse all packages**: [**Open Z-Widgets-Installers/ directory**](Z-Widgets-Installers/)
+🚀 **Official Release Hub**: [**View all v0.1.1 Release Assets on GitHub**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/tag/v0.1.1) | 📁 **Local Repo Mirror**: [**Browse Z-Widgets-Installers/ directory**](Z-Widgets-Installers/)
 
 > [!TIP]
 > **Windows SmartScreen Tip**: If Microsoft Defender SmartScreen displays *"Windows protected your PC"*, click **"More info"** and then select **"Run anyway"** (this is standard Windows security behavior for new unsigned open-source applications).
@@ -151,19 +151,24 @@ Follow the instructions for your operating system:
 ### 🍏 macOS Users (Apple Silicon vs. Intel)
 1. **Identify your Mac chip:**
    - Click the **Apple Menu ()** at the top-left corner of your screen > **About This Mac**.
-   - If it says **Chip: Apple M1 / M2 / M3 / M4** 👉 Download [**Apple Silicon DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-AppleSilicon.dmg).
-   - If it says **Processor: Intel Core i5 / i7 / i9** 👉 Download [**Intel DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/raw/main/Z-Widgets-Installers/Z-Widgets-for-Mac-Intel.dmg).
+   - If it says **Chip: Apple M1 / M2 / M3 / M4** 👉 [**Download Apple Silicon DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-AppleSilicon.dmg).
+   - If it says **Processor: Intel Core i5 / i7 / i9** 👉 [**Download Intel DMG**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-Intel.dmg).
 2. Open the downloaded `.dmg` file and drag `Z-Widgets` into your **Applications** folder.
 3. On first launch: **Right-Click (Control + Click) > Open** to launch the app.
 
 ### 🪟 Windows Users
-1. Download and double-click `Z-Widgets-for-Windows.exe`.
+1. Download [**Z-Widgets-for-Windows.exe**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Windows.exe) and double-click to install.
 2. If Windows Defender SmartScreen shows *"Windows protected your PC"*, click **"More info"** and then **"Run anyway"**.
 3. The setup wizard will create a desktop shortcut and launch Z-Widgets automatically.
 
 ### 🐧 Linux (Ubuntu / Debian / Linux Mint) Users
-1. Download `Z-Widgets-for-Linux.deb`.
-2. Double-click the `.deb` file and click **Install** in the software manager (or run `sudo dpkg -i Z-Widgets-for-Linux.deb` in terminal).
+1. Download [**Z-Widgets-for-Linux.deb**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb).
+2. Double-click the `.deb` file and click **Install** in the software manager.
+   *Or install via terminal in one line:*
+   ```bash
+   wget https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb
+   sudo dpkg -i Z-Widgets-for-Linux.deb
+   ```
 3. Open Z-Widgets from your system's application launcher.
 
 ---
