@@ -36,14 +36,17 @@
 
 Choose your operating system below for high-speed direct downloads hosted on GitHub Global CDN:
 
-| Platform | Direct 1-Click Fast Download Link | File Size | Description / Compatibility |
-| :--- | :--- | :---: | :--- |
-| 🍏 **macOS (Apple Silicon)** | [**Download Mac Apple Silicon (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | For modern Macs (**M1, M2, M3, M4**) |
-| 🍏 **macOS (Intel Core)** | [**Download Mac Intel (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | For Intel-based Macs (**2019 or earlier**) |
-| 🪟 **Windows** | [**Download for Windows (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Windows.exe) | `77 MB` | Standard installer for **Windows 10 & 11** |
-| 🐧 **Linux (Ubuntu/Debian)** | [**Download for Linux (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb) | `70 MB` | Native installer for **Ubuntu, Debian, & Mint** |
+| Platform | Official Direct Link | ⚡ High-Speed CDN Mirror | Size | Compatibility |
+| :--- | :--- | :--- | :---: | :--- |
+| 🍏 **macOS (Apple Silicon)** | [**Download (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-AppleSilicon.dmg) | [**⚡ Fast Mirror**](https://ghfast.top/https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-AppleSilicon.dmg) | `94 MB` | Modern Macs (**M1, M2, M3, M4**) |
+| 🍏 **macOS (Intel Core)** | [**Download (.dmg)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-Intel.dmg) | [**⚡ Fast Mirror**](https://ghfast.top/https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Mac-Intel.dmg) | `98 MB` | Intel Macs (**2019 or earlier**) |
+| 🪟 **Windows** | [**Download (.exe)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Windows.exe) | [**⚡ Fast Mirror**](https://ghfast.top/https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Windows.exe) | `77 MB` | Standard for **Windows 10 & 11** |
+| 🐧 **Linux (Ubuntu/Debian)** | [**Download (.deb)**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb) | [**⚡ Fast Mirror**](https://ghfast.top/https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb) | `70 MB` | **Ubuntu, Debian, & Mint** |
 
 🚀 **Official Release Hub**: [**View all v0.1.1 Release Assets on GitHub**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/tag/v0.1.1) | 📁 **Local Repo Mirror**: [**Browse Z-Widgets-Installers/ directory**](Z-Widgets-Installers/)
+
+> [!NOTE]
+> **Slow GitHub Download?** In some regions (e.g., India/Asia), GitHub's storage servers (`objects.githubusercontent.com`) can be throttled by local ISPs down to a few KB/s. Use the **⚡ Fast Mirror** links above to download via global Cloudflare edge caching at full line-speed.
 
 > [!TIP]
 > **Windows SmartScreen Tip**: If Microsoft Defender SmartScreen displays *"Windows protected your PC"*, click **"More info"** and then select **"Run anyway"** (this is standard Windows security behavior for new unsigned open-source applications).
@@ -162,11 +165,12 @@ Follow the instructions for your operating system:
 3. The setup wizard will create a desktop shortcut and launch Z-Widgets automatically.
 
 ### 🐧 Linux (Ubuntu / Debian / Linux Mint) Users
-1. Download [**Z-Widgets-for-Linux.deb**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb).
+1. Download [**Z-Widgets-for-Linux.deb**](https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb) (or use [**⚡ Fast Mirror**](https://ghfast.top/https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb)).
 2. Double-click the `.deb` file and click **Install** in the software manager.
-   *Or install via terminal in one line:*
+   *Or install via terminal in high-speed (recommended):*
    ```bash
-   wget https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb
+   # Download via high-speed Cloudflare CDN mirror (bypasses ISP throttle)
+   wget https://ghfast.top/https://github.com/zeesu-royalist/Z-Widgets-Desktop-App/releases/download/v0.1.1/Z-Widgets-for-Linux.deb
    sudo dpkg -i Z-Widgets-for-Linux.deb
    ```
 3. Open Z-Widgets from your system's application launcher.
