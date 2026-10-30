@@ -1,4 +1,4 @@
-export const APP_NAME = 'Z-Widgets', APP_VERSION = '0.1.0'
+export const APP_NAME = 'Z-Widgets', APP_VERSION = '0.1.1'
 
 export const DEFAULT_WINDOW_WIDTH = 980, DEFAULT_WINDOW_HEIGHT = 680
 export const MIN_WINDOW_WIDTH = 800, MIN_WINDOW_HEIGHT = 560

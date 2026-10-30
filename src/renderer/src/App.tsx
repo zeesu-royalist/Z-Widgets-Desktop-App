@@ -5,7 +5,7 @@ import {
   ChevronRight, Image as ImageIcon, Sun, Moon, LayoutGrid, X, RotateCcw,
   Monitor, Terminal, Zap, ChevronDown, ChevronUp, Minimize2, ArrowLeft,
   Share2, Tag, Search, Check, Folder, Calendar as CalendarIcon, ExternalLink,
-  ArrowDown, Download, Pause, Minus, Square, Pencil
+  ArrowDown, Download, Pause, Pencil
 } from 'lucide-react'
 import { AppInfo, StartupSettings, PersistedWidgetConfig } from '../../shared/types'
 import {
@@ -834,39 +834,6 @@ export const App: React.FC = () => {
     return 'linux'
   }, [appInfo?.platform])
 
-  const [isMaximized, setIsMaximized] = useState<boolean>(false)
-
-  useEffect(() => {
-    window.api?.isMaximized?.().then((max) => {
-      if (typeof max === 'boolean') setIsMaximized(max)
-    }).catch(console.error)
-  }, [])
-
-  const handleMinimize = async (): Promise<void> => {
-    try {
-      await window.api?.minimizeWindow?.()
-    } catch (e) {
-      console.error('Failed to minimize window:', e)
-    }
-  }
-
-  const handleToggleMaximize = async (): Promise<void> => {
-    try {
-      const result = await window.api?.maximizeWindow?.()
-      setIsMaximized(Boolean(result))
-    } catch (e) {
-      console.error('Failed to toggle maximize window:', e)
-    }
-  }
-
-  const handleClose = async (): Promise<void> => {
-    try {
-      await window.api?.hideWindow?.()
-    } catch (e) {
-      console.error('Failed to close/hide window:', e)
-    }
-  }
-
   // Sync dark class on document element
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode)
@@ -1045,64 +1012,12 @@ export const App: React.FC = () => {
           ======================================================== */}
       <aside className="w-56 shrink-0 flex flex-col bg-[#e7e7eb]/80 dark:bg-[#1a1b20]/80 backdrop-blur-2xl border-r border-black/[0.08] dark:border-white/[0.08] transition-colors relative z-20">
 
-        {/* OS-Specific Window Controls / Titlebar Drag Area */}
-        <div className="titlebar-drag-region h-11 w-full flex items-center px-4 gap-2">
-          {/* Windows 11 Fluent Native Controls */}
-          {platform === 'win32' && (
-            <div className="titlebar-no-drag flex items-center gap-1">
-              <button
-                onClick={handleMinimize}
-                className="w-7 h-6 rounded flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-300 transition-colors cursor-pointer"
-                title="Minimize"
-              >
-                <Minus className="w-3.5 h-3.5 stroke-[2]" />
-              </button>
-              <button
-                onClick={handleToggleMaximize}
-                className="w-7 h-6 rounded flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-300 transition-colors cursor-pointer"
-                title={isMaximized ? 'Restore' : 'Maximize'}
-              >
-                <Square className="w-3 h-3 stroke-[2]" />
-              </button>
-              <button
-                onClick={handleClose}
-                className="w-7 h-6 rounded flex items-center justify-center hover:bg-[#e81123] hover:text-white text-neutral-600 dark:text-neutral-300 transition-colors cursor-pointer"
-                title="Close"
-              >
-                <X className="w-3.5 h-3.5 stroke-[2]" />
-              </button>
-            </div>
-          )}
-
-          {/* Linux (Ubuntu GNOME) Native Controls */}
-          {platform === 'linux' && (
-            <div className="titlebar-no-drag flex items-center gap-2">
-              <button
-                onClick={handleClose}
-                className="w-6 h-6 rounded-full flex items-center justify-center bg-black/[0.08] dark:bg-white/[0.12] hover:bg-[#e95420] hover:text-white text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
-                title="Close"
-              >
-                <X className="w-3 h-3 stroke-[2.5]" />
-              </button>
-              <button
-                onClick={handleMinimize}
-                className="w-6 h-6 rounded-full flex items-center justify-center bg-black/[0.08] dark:bg-white/[0.12] hover:bg-black/20 dark:hover:bg-white/25 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
-                title="Minimize"
-              >
-                <Minus className="w-3 h-3 stroke-[2.5]" />
-              </button>
-              <button
-                onClick={handleToggleMaximize}
-                className="w-6 h-6 rounded-full flex items-center justify-center bg-black/[0.08] dark:bg-white/[0.12] hover:bg-black/20 dark:hover:bg-white/25 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
-                title={isMaximized ? 'Restore' : 'Maximize'}
-              >
-                <Square className="w-2.5 h-2.5 stroke-[2.5]" />
-              </button>
-            </div>
-          )}
-
-          {/* macOS Traffic Lights: Handled natively by macOS window server at (16, 16) */}
-        </div>
+        {/* macOS Traffic Lights Margin (On macOS, system renders traffic lights at 16, 16; on Windows/Linux, the OS titlebar provides controls) */}
+        {platform === 'darwin' ? (
+          <div className="titlebar-drag-region h-11 w-full shrink-0" />
+        ) : (
+          <div className="titlebar-drag-region h-3 w-full shrink-0" />
+        )}
 
         {/* macOS Toolbar Row (Back, Share, QuickLook, Tag, Search) */}
         <div className="titlebar-no-drag px-3 pb-2.5 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.06]">
@@ -1422,65 +1337,21 @@ export const App: React.FC = () => {
             className="w-full max-w-lg bg-[#f6f6f8] dark:bg-[#1e1e22] rounded-2xl shadow-2xl border border-black/15 dark:border-white/10 flex flex-col max-h-[88vh] overflow-hidden animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* OS-Adaptive Window Titlebar for Settings Modal */}
-            <div className="h-12 px-4 flex items-center justify-between border-b border-black/[0.07] dark:border-white/[0.08] select-none bg-black/[0.02] dark:bg-white/[0.02] shrink-0">
-              <div className="flex items-center gap-2 w-20">
-                {platform === 'darwin' ? (
-                  <>
-                    <button
-                      onClick={() => setIsSettingsOpen(false)}
-                      className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] hover:brightness-90 transition-all cursor-pointer flex items-center justify-center group"
-                      title="Close"
-                    >
-                      <X className="w-2 h-2 text-[#4a0002] opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </button>
-                    <button
-                      onClick={() => setIsSettingsOpen(false)}
-                      className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] hover:brightness-90 transition-all cursor-pointer"
-                      title="Minimize"
-                    />
-                    <button
-                      className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] opacity-40 cursor-default"
-                      title="Zoom"
-                    />
-                  </>
-                ) : platform === 'linux' ? (
-                  <button
-                    onClick={() => setIsSettingsOpen(false)}
-                    className="w-6 h-6 rounded-full flex items-center justify-center bg-black/[0.08] dark:bg-white/[0.12] hover:bg-[#e95420] hover:text-white text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
-                    title="Close"
-                  >
-                    <X className="w-3 h-3 stroke-[2.5]" />
-                  </button>
-                ) : (
-                  <div className="flex items-center gap-1.5 text-neutral-500">
-                    <SettingsIcon className="w-4 h-4" />
-                  </div>
-                )}
+            {/* Modal Titlebar */}
+            <div className="h-12 px-5 flex items-center justify-between border-b border-black/[0.07] dark:border-white/[0.08] select-none bg-black/[0.02] dark:bg-white/[0.02] shrink-0">
+              <div className="flex items-center gap-2">
+                <SettingsIcon className="w-4 h-4 text-neutral-500" />
+                <span className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100 tracking-tight">
+                  System Settings
+                </span>
               </div>
 
-              <span className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100 tracking-tight">
-                System Settings
-              </span>
-
-              <div className="w-20 flex justify-end">
-                {platform === 'win32' ? (
-                  <button
-                    onClick={() => setIsSettingsOpen(false)}
-                    className="w-7 h-6 rounded flex items-center justify-center hover:bg-[#e81123] hover:text-white text-neutral-600 dark:text-neutral-300 transition-colors cursor-pointer"
-                    title="Close"
-                  >
-                    <X className="w-3.5 h-3.5 stroke-[2]" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setIsSettingsOpen(false)}
-                    className="h-6 px-3 rounded-[6px] bg-[#007aff] hover:bg-[#006ee6] active:scale-95 text-white text-xs font-medium shadow-xs transition-all cursor-pointer"
-                  >
-                    Done
-                  </button>
-                )}
-              </div>
+              <button
+                onClick={() => setIsSettingsOpen(false)}
+                className="h-7 px-3.5 rounded-[6px] bg-[#007aff] hover:bg-[#006ee6] active:scale-95 text-white text-xs font-medium shadow-xs transition-all cursor-pointer"
+              >
+                Done
+              </button>
             </div>
 
             {/* Modal Body: macOS System Settings Panes */}
