@@ -62,7 +62,18 @@ export const SystemMonitorWidget: React.FC<SystemMonitorWidgetProps> = ({ widget
     }
   }
 
-  const handleToggleMetrics = async (): Promise<void> => {
+  const handleRootDoubleClick = (e: React.MouseEvent): void => {
+    // Prevent accidental close when clicking on any button or non-drag interactive elements
+    if ((e.target as HTMLElement).closest('button, .titlebar-no-drag, input, select, textarea, a')) {
+      return
+    }
+    handleClose()
+  }
+
+  const handleToggleMetrics = async (e?: React.MouseEvent): Promise<void> => {
+    if (e) {
+      e.stopPropagation()
+    }
     setShowFreeMetrics((prev) => !prev)
     try {
       const data = await window.api?.getSystemStats?.()
@@ -94,8 +105,8 @@ export const SystemMonitorWidget: React.FC<SystemMonitorWidgetProps> = ({ widget
 
   return (
     <div
-      onDoubleClick={handleClose}
-      title="System Resource Monitor (Double-click to close)"
+      onDoubleClick={handleRootDoubleClick}
+      title="System Resource Monitor (Double-click background to close)"
       className="titlebar-drag-region w-screen h-screen flex bg-transparent select-none overflow-hidden font-sans"
     >
       {/* Rectangular Deep Dark Emerald Chassis - Inspired by Reference Widget */}
@@ -176,6 +187,10 @@ export const SystemMonitorWidget: React.FC<SystemMonitorWidgetProps> = ({ widget
           <button
             type="button"
             onClick={handleToggleMetrics}
+            onDoubleClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+            }}
             title={showFreeMetrics ? 'Showing Free Capacity (Click for Used)' : 'Showing Usage % (Click for Free)'}
             className="titlebar-no-drag w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-[#22c55e] border border-white/10 shadow-xs cursor-pointer transition-all"
           >
@@ -186,7 +201,10 @@ export const SystemMonitorWidget: React.FC<SystemMonitorWidgetProps> = ({ widget
         {/* ================================================================= */}
         {/* MIDDLE GAUGES: TWO CIRCULAR ARC PROGRESS GAUGES (LEFT & RIGHT)    */}
         {/* ================================================================= */}
-        <div className="titlebar-no-drag flex items-center justify-around flex-1 px-1 my-0.5 z-10 select-text">
+        <div
+          onDoubleClick={(e) => e.stopPropagation()}
+          className="titlebar-no-drag flex items-center justify-around flex-1 px-1 my-0.5 z-10 select-text"
+        >
 
           {/* --------------------------------------------------------------- */}
           {/* LEFT GAUGE: CPU LOAD                                            */}
